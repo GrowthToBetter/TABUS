@@ -70,7 +70,7 @@ export default function Table({ studentData, userData }: { studentData: Prisma.U
     <>
       <section className="min-w-[1440px] max-w-full min-h-full w-full bg-[#F6F6F6] p-4 outline outline-1 outline-slate-200 ml-6">
         <div className="flex justify-end items-center">
-          <AddStudent />
+          <AddStudent userData={userData}/>
         </div>
         <div className="w-full border-b-2 border-black "></div>
         <div className="mt-6">

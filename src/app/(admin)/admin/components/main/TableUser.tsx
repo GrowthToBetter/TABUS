@@ -76,7 +76,7 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
         <section className="max-w-[1440px] min-h-full mx-auto w-full bg-[#F6F6F6] p-4 outline outline-1 outline-slate-200">
           <div className="flex justify-between items-center">
             <h5 className="text-[40px] font-bold mx-5 text-Secondary">Admin</h5>
-            <AddUser />
+            <AddUser userData={userData} />
           </div>
           <div className="w-full border-b-2 border-black "></div>
           <div className="mt-6">
