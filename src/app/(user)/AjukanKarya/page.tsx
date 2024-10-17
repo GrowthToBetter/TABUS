@@ -18,10 +18,11 @@ export default async function page() {
       comment: { include: { file: true } },
     },
   });
+  const getGenre=await prisma.genre.findMany();
   if (userData) {
     if (session?.user?.email && !userData.title && userData?.role==="SISWA") return redirect("/pilihRole");
   }
 
   if (!session?.user?.email) return redirect("/signin");
-  return <AjukanKarya userData={userData as userFullPayload} />;
+  return <AjukanKarya userData={userData as userFullPayload} genre={getGenre}/>;
 }

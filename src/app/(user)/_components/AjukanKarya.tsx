@@ -5,7 +5,7 @@
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import FileUploader from "../AjukanKarya/_components/UploaderFile/page";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
+import { FileFullPayload, GenreFullPayload, userFullPayload } from "@/utils/relationsip";
 import ModalProfile from "@/app/components/utils/Modal";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import ModalEditCoverFile from "../AjukanKarya/_components/ModalEditCoverFile";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
 
-export default function UploadPage({userData}: {userData: userFullPayload}) {
+export default function UploadPage({userData, genre}: {userData: userFullPayload; genre: GenreFullPayload[]}) {
   const [modal, setModal] = useState(false);
   const [cover, setCover] = useState<{ [key: string]: boolean }>({});
   const [file, setFile] = useState<FileFullPayload[]>([]);
@@ -69,6 +69,13 @@ export default function UploadPage({userData}: {userData: userFullPayload}) {
       [userId]: newClass,
     }));
   };
+  const filteredGenre:string[]=[];
+  for(const Genre of genre){
+    if(!filteredGenre.includes(Genre.Genre)){
+      filteredGenre.push(Genre.Genre)
+  }
+
+  }
 
   return (
     <div className="pt-44">
@@ -104,7 +111,7 @@ export default function UploadPage({userData}: {userData: userFullPayload}) {
                     setModal(false);
                   }}
                 >
-                  <FileUploader userData={userData} />
+                  <FileUploader userData={userData} genre={genre} />
                 </ModalProfile>
               )}
               {openUploadByLink && (
@@ -124,7 +131,7 @@ export default function UploadPage({userData}: {userData: userFullPayload}) {
                   <TextField type="text" name="url" label="Link File" placeholder="Link File" required={true}/>
                   <FormButton type="submit" variant="base">Submit</FormButton>
                   <DropDown label="Genre"
-                    options={Object.values(Genre).map((classes) => ({
+                    options={filteredGenre.map((classes) => ({
                       label: classes,
                       value: classes,
                     }))}

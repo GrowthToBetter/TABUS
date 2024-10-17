@@ -1,6 +1,5 @@
 import { DropDown } from "@/app/components/utils/Form";
-import { userFullPayload } from "@/utils/relationsip";
-import { Genre } from "@prisma/client";
+import { GenreFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -17,9 +16,10 @@ interface UploadedFile {
 }
 
 export default function FileUploader({
-  userData,
+  userData, genre
 }: {
   userData: userFullPayload;
+  genre: GenreFullPayload[]
 }) {
   const { data: session } = useSession();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -44,7 +44,7 @@ export default function FileUploader({
           acceptedFiles.map(async (file) => {
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("Genre", selectedGenre[userData.id] as Genre);
+            formData.append("Genre", selectedGenre[userData.id] as string);
             const response = await fetch(
               `/api/upload?userId=${session?.user?.id}`,
               {
@@ -86,6 +86,13 @@ export default function FileUploader({
       [userId]: newClass,
     }));
   };
+  const filteredGenre:string[]=[];
+  for(const Genre of genre){
+    if(!filteredGenre.includes(Genre.Genre)){
+      filteredGenre.push(Genre.Genre)
+  }
+
+  }
   return (
     <div className="h-screen">
       <div
@@ -101,7 +108,7 @@ export default function FileUploader({
       </div>
       <DropDown
         label="Genre"
-        options={Object.values(Genre).map((classes) => ({
+        options={filteredGenre.map((classes) => ({
           label: classes,
           value: classes,
         }))}

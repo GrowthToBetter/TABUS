@@ -265,7 +265,7 @@ export default function UploadPage({
                             className="flex justify-center gap-x-2 py-2 px-4"
                           >
                             <Image
-                              src={userData?.photo_profile as string}
+                              src={file.user?.photo_profile as string}
                               alt="user image"
                               width={36}
                               height={36}

@@ -5,18 +5,20 @@ import Image from "next/image";
 import hipster from "@/../public/svg/hipsterP.png";
 import setting from "@/../public/svg/settingsP.png";
 import { LinkButton } from "@/app/components/utils/Button";
-import { Genre, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
-import { FileFullPayload } from "@/utils/relationsip";
+import { FileFullPayload, GenreFullPayload } from "@/utils/relationsip";
 
 export default function Main({
   ListData,
   session,
   currentUser,
+  genre
 }: {
   ListData: FileFullPayload[];
   session: Session;
   currentUser: Prisma.UserGetPayload<{}>;
+  genre: GenreFullPayload[];
 }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
@@ -46,6 +48,13 @@ export default function Main({
     setSelected(data);
   };
   console.log(filteredUser);
+  const filteredGenre:string[]=[];
+  for(const Genre of genre){
+    if(!filteredGenre.includes(Genre.Genre)){
+      filteredGenre.push(Genre.Genre)
+  }
+
+  }
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
       <div className="block md:hidden mb-4">
@@ -135,7 +144,7 @@ export default function Main({
                   All
                 </p>
               </button>
-              {Object.values(Genre).map((data) => (
+              {filteredGenre.map((data) => (
               <button key={data}
                 onClick={() => handleButtonFilter(data)}
                 className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2"
