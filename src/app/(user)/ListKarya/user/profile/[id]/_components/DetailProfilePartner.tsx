@@ -75,7 +75,7 @@ export default function DetailProfilePartner({
 
           <div className="relative z-10 lg:flex justify-between items-start">
             <div>
-              <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Partner List</h2>
+              <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Paper List</h2>
               <p className="font-semibold text-xl mb-4">
                 Team Name :{" "}
                 {currentTeam?.status ? (

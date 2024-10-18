@@ -234,7 +234,7 @@ export default function Main({
                     <div className="mt-6 justify-start">
                       <LinkButton
                         variant="white"
-                        href={`/partner/user/profile/${user.id}`}
+                        href={`/ListKarya/user/profile/${user.userId}`}
                         className="bg-transparent border rounded-full"
                       >
                         Profil
