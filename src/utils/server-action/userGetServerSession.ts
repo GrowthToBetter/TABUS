@@ -406,6 +406,26 @@ export const DeleteUser = async (id: string) => {
   }
 };
 
+export const DeleteFile = async (id: string) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user) {
+      return { status: 401, message: "Auth Required" };
+    }
+    const del = await prisma.fileWork.delete({
+      where: { id },
+    });
+    if (!del) {
+      return { status: 400, message: "Failed to delete user!" };
+    }
+    revalidatePath("/AjukanKarya");
+    return { status: 200, message: "Delete Success!" };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error((error as Error).message);
+  }
+};
+
 export const updateRole = async (id: string, data: FormData) => {
   try {
     const session = await nextGetServerSession();
