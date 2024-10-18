@@ -4,16 +4,20 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import hipster from "@/../public/svg/hipsterP.png";
 import setting from "@/../public/svg/settingsP.png";
-import { LinkButton } from "@/app/components/utils/Button";
+import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 import { FileFullPayload, GenreFullPayload } from "@/utils/relationsip";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { addLike, addViews } from "@/utils/server-action/userGetServerSession";
+import ModalProfile from "@/app/components/utils/Modal";
 
 export default function Main({
   ListData,
   session,
   currentUser,
-  genre
+  genre,
 }: {
   ListData: FileFullPayload[];
   session: Session;
@@ -48,13 +52,45 @@ export default function Main({
     setSelected(data);
   };
   console.log(filteredUser);
-  const filteredGenre:string[]=[];
-  for(const Genre of genre){
-    if(!filteredGenre.includes(Genre.Genre)){
-      filteredGenre.push(Genre.Genre)
+  const filteredGenre: string[] = [];
+  for (const Genre of genre) {
+    if (!filteredGenre.includes(Genre.Genre)) {
+      filteredGenre.push(Genre.Genre);
+    }
   }
-
-  }
+  const addView = async (file: FileFullPayload) => {
+    const loading = toast.loading("Loading...");
+    try {
+      const update = await addViews(file.id, file.views + 1);
+      if (!update) {
+        toast.error("Gagal Menambahkan Like");
+      }
+      toast.success("Success", { id: loading });
+      return update;
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+  const [openProfiles, setOpenProfiles] = useState<boolean>(false);
+  const router = useRouter();
+  const [like, setLike] = useState<boolean>(false);
+  const addLikes = async (file: FileFullPayload) => {
+    setLike(!like);
+    const loading = toast.loading("Loading...");
+    try {
+      const update = await addLike(
+        file.id,
+        like ? file.Like - 1 : file.Like + 1
+      );
+      if (!update) {
+        toast.error("Gagal Menambahkan Like");
+      }
+      toast.success("Success", { id: loading });
+      return update;
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
       <div className="block md:hidden mb-4">
@@ -145,16 +181,16 @@ export default function Main({
                 </p>
               </button>
               {filteredGenre.map((data) => (
-              <button key={data}
-                onClick={() => handleButtonFilter(data)}
-                className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2"
-              >
-                <Image src={hipster} width={30} alt={data} />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">
-                  {data}
-                </p>
-              </button>
-                
+                <button
+                  key={data}
+                  onClick={() => handleButtonFilter(data)}
+                  className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2"
+                >
+                  <Image src={hipster} width={30} alt={data} />
+                  <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">
+                    {data}
+                  </p>
+                </button>
               ))}
             </div>
           </div>
@@ -231,7 +267,7 @@ export default function Main({
                       {user.filename}
                     </p>
 
-                    <div className="mt-6 justify-start">
+                    <div className="mt-6 justify-between flex">
                       <LinkButton
                         variant="white"
                         href={`/ListKarya/user/profile/${user.userId}`}
@@ -239,7 +275,48 @@ export default function Main({
                       >
                         Profil
                       </LinkButton>
+                      <div className="flex gap-x-4">
+                      <FormButton
+                        variant="base"
+                        onClick={() => {
+                          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                          user.mimetype.includes("msword") ||
+                          user.mimetype.includes(
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          )
+                            ? setOpenProfiles(true)
+                            : router.push(user.path);
+                          addView(user);
+                        }}
+                        className=" text-blue-500 hover:underline"
+                      >
+                        Lihat File
+                      </FormButton>
+                      <FormButton
+                        variant="base"
+                        className=" hover:underline"
+                        onClick={()=>{addLikes(user)}}
+                      >
+                        Like : {user.Like}
+                      </FormButton>
+
+                      </div>
                     </div>
+                    {openProfiles && (
+                      <ModalProfile
+                        title={user.filename}
+                        onClose={() => setOpenProfiles(false)}
+                        className="h-screen"
+                      >
+                        <iframe
+                          className="w-full h-full"
+                          src={`${user.path}&output=embed`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
+                          allowFullScreen
+                        ></iframe>
+                      </ModalProfile>
+                    )}
                   </div>
                 </div>
               ))}

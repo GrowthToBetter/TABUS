@@ -3,7 +3,7 @@
 
 import Gambar from "@/../public/img/HomeImage.png";
 import Image from "next/image";
-import { FormButton } from "../../components/utils/Button";
+import { FormButton, LinkButton } from "../../components/utils/Button";
 import { Archivo_Black } from "next/font/google";
 const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 import IconSubject from "../../components/Icons/icon-Subject";
@@ -19,7 +19,7 @@ import Card from "../../components/utils/card";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function Home({userData}: {userData:userFullPayload }) {
+export default function Home({ userData }: { userData: userFullPayload }) {
   const { data: session, status } = useSession();
   const [files, setFile] = useState<FileFullPayload[]>([]);
   const { data, error } = useSWR(`/api/getFiles`, fetcher, {
@@ -31,7 +31,7 @@ export default function Home({userData}: {userData:userFullPayload }) {
       setFile(dataFile);
     }
   }, [data]);
-  const router=useRouter();
+  const router = useRouter();
   const filteredFiles = files.filter((file) => file.status === "VERIFIED");
   return (
     <div className="">
@@ -72,17 +72,43 @@ export default function Home({userData}: {userData:userFullPayload }) {
           </ul>
         </div>
       </div>
-      <div className=" max-w-max bg-slate-500 flex-wrap flex justify-center items-center relative">
-          {filteredFiles.map((file, i) => (
-            <Card
-              LinktoVisit={file.path}
-              bgImage={ file?.coverFile ? file.coverFile :"https://www.shutterstock.com/image-vector/none-icon-thin-linear-outline-260nw-2139308813.jpg"}
-              nama={file.filename}
-              key={i}
-              className="m-5"
-              file={file}
+      <div className=" grid lg:grid-cols-2 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
+        {filteredFiles.map((user, i) => (
+          <div
+            key={i}
+            id="container"
+            className="w-full h-fit bg-slate-50 rounded-3xl pb-6 border border-slate-200"
+          >
+            <Image
+              src={
+                user.coverFile
+                  ? (user.coverFile as string)
+                  : "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"
+              }
+              unoptimized
+              quality={100}
+              width={100}
+              height={100}
+              alt="banner"
+              className="w-full object-cover h-40 rounded-t-3xl"
             />
-          ))}
+            <div className="ml-8 mt-2">
+              <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
+                {user.filename}
+              </p>
+
+              <div className="mt-6 justify-start">
+                <LinkButton
+                  variant="white"
+                  href={`${user.path}`}
+                  className="bg-transparent border rounded-full"
+                >
+                  Profil
+                </LinkButton>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
       <div>
         <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
@@ -90,7 +116,7 @@ export default function Home({userData}: {userData:userFullPayload }) {
             <h1
               className={`text-[64px] text-start ${archivo_black.className} leading-none`}
             >
-              <span className="text-red-500">G</span>ELIAD
+              <span className="text-red-500">R</span>uang Belajar
             </h1>
             <p className="xl:text-[32px] lg:text-[30px] md:text-[28px] sm:text-[26px] text-[24px] font-normal my-2">
               Berjalan Bersama Menghasilkan Ribuan Karya
