@@ -105,7 +105,8 @@ export async function POST(req: NextRequest) {
       file,
       driveResponse,
       user as userFullPayload,
-      formData
+      formData,
+      drive
     );
     console.log("File record created in database:", uploadedFile.id);
 

@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Tabus",
+  title: "Ruang Belajar",
   description: "Tingkatkan Jumlah Literasi siswa bersama kami",
 };
 

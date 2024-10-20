@@ -168,7 +168,10 @@ export const updateUploadFileByLink = async ( data: FormData) => {
   try {
     const name = data.get("name") as string;
     const type = data.get("type") as string;
-    const Genre=data.get("Genre") as string;
+    const Genre=data.get("Genre") ;
+    if(!Genre){
+      throw new Error("eror");
+    }
     const size = 0;
     const url = data.get("url") as string;
     const userId = data.get("userId") as string;
@@ -179,7 +182,7 @@ export const updateUploadFileByLink = async ( data: FormData) => {
         mimetype: type,
         size: size,
         path: url,
-        genre: Genre,
+        genre: Genre as string,
         userId: userId,
         status: "PENDING",
         userRole: role,
@@ -487,15 +490,19 @@ export const updateRole = async (id: string, data: FormData) => {
   }
 };
 
-export const createFile=async (file : File, driveResponse:GaxiosResponse<drive_v3.Schema$File>, user:userFullPayload, data:FormData)=>{
+export const createFile=async (file : File, driveResponse:GaxiosResponse<drive_v3.Schema$File>, user:userFullPayload, data:FormData, drive:drive_v3.Drive)=>{
   try{
-    const genre=data.get("Genre") as string;
+    const genre=data.get("Genre");
+    if(genre === "undefined"){
+      await drive.files.delete({ fileId: driveResponse.data.id as string });
+      throw new Error("eror");
+    }
     const create=await prisma.fileWork.create({
       data: {
         filename: file.name,
         mimetype: file.type,
         size: file.size,
-        genre,
+        genre: genre as string,
         path: driveResponse.data.webViewLink || "",
         userId: user.id,
         status: "PENDING",
