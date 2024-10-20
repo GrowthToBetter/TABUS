@@ -44,6 +44,7 @@ model fileWork {
   user          User?         @relation("file_id", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   path          String
   coverFile         String?
+  permisionId     String?
   genre        String
   Like          Int @default(0)
   views         Int @default(0)

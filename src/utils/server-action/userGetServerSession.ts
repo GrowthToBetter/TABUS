@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
@@ -5,11 +6,33 @@ import { Class,  Gender, Genre, RequestStatus, Role, Status, Title } from "@pris
 import prisma from "@/lib/prisma";
 import { createUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
+import { google } from "googleapis";
+import { drive_v3 } from "googleapis/build/src/apis/drive/v3";
 import { nextGetServerSession } from "@/lib/authOption";
 import { hash } from "bcrypt";
-import { userFullPayload } from "../relationsip";
+import { FileFullPayload, userFullPayload } from "../relationsip";
 import { GaxiosResponse } from "googleapis-common";
-import { drive_v3 } from "googleapis/build/src/apis/drive/v3";
+
+const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID
+const credentials = {
+  type: process.env.GOOGLE_ACCOUNT_TYPE,
+  project_id: process.env.GOOGLE_PROJECT_ID,
+  private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+  private_key: process.env.GOOGLE_PRIVATE_KEY,
+  client_email: process.env.GOOGLE_CLIENT_EMAIL,
+  client_id: process.env.GOOGLE_CLIENT_ID_DRIVE,
+  auth_uri: process.env.GOOGLE_AUTH_URI,
+  token_uri: process.env.GOOGLE_TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
+} as any;
+const auth = new google.auth.GoogleAuth({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  universeDomain: process.env.GOOGLE_UNIVERSE_DOMAIN,
+  credentials,
+  scopes: ["https://www.googleapis.com/auth/drive.file"],
+});
+const drive: drive_v3.Drive = google.drive({ version: "v3", auth });
 
 export const UpdateUserById = async (data: FormData) => {
   try {
@@ -406,11 +429,24 @@ export const DeleteUser = async (id: string) => {
   }
 };
 
-export const DeleteFile = async (id: string) => {
+export const DeleteFile = async (id: string, file: FileFullPayload) => {
   try {
     const session = await nextGetServerSession();
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
+    }
+    const driveResponse = await drive.files.delete({
+      fileId: file.permisionId as string,
+    });
+    if(!driveResponse){
+      const del = await prisma.fileWork.delete({
+        where: { id },
+      });
+      if (!del) {
+        return { status: 400, message: "Failed to delete user!" };
+      }
+      revalidatePath("/AjukanKarya");
+      return { status: 200, message: "Delete Success!" };
     }
     const del = await prisma.fileWork.delete({
       where: { id },
@@ -464,6 +500,7 @@ export const createFile=async (file : File, driveResponse:GaxiosResponse<drive_v
         userId: user.id,
         status: "PENDING",
         userRole: user.role,
+        permisionId: driveResponse.data.id || "",
       }
     })
     if(!create){

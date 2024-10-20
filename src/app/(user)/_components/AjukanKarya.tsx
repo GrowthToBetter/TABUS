@@ -90,10 +90,10 @@ export default function UploadPage({
       filteredGenre.push(Genre.Genre);
     }
   }
-  const handleDelete=async (id:string)=>{
+  const handleDelete=async (id:string, file:FileFullPayload)=>{
     try {
       const loading = toast.loading("Loading...");
-      const deleteExistingFile = await DeleteFile(id);
+      const deleteExistingFile = await DeleteFile(id, file );
       if (!deleteExistingFile) {
         toast.error("error delete this file");
       }
@@ -237,7 +237,7 @@ export default function UploadPage({
                       <FormButton
                         type="button"
                         variant="base"
-                        onClick={() => handleDelete(file.id)}
+                        onClick={() => handleDelete(file.id, file)}
                       >
                         Delete Paper
                       </FormButton>

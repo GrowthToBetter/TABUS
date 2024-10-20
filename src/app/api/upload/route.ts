@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("File permissions set");
-    const uploadedFile = await createFile(
+    const uploadedFile:any = await createFile(
       file,
       driveResponse,
       user as userFullPayload,
