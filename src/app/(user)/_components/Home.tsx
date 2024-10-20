@@ -93,9 +93,14 @@ export default function Home({ userData }: { userData: userFullPayload }) {
               className="w-full object-cover h-40 rounded-t-3xl"
             />
             <div className="ml-8 mt-2">
-              <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
-                {user.filename}
-              </p>
+              <div className="flex justify-between p-5">
+                <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
+                  {user.filename}
+                </p>
+                <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
+                  views : {user.views}
+                </p>
+              </div>
 
               <div className="mt-6 justify-start">
                 <LinkButton

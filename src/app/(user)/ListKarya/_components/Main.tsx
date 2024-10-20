@@ -263,9 +263,14 @@ export default function Main({
                     className="w-full h-36 rounded-t-3xl"
                   />
                   <div className="ml-8 mt-2">
-                    <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
-                      {user.filename}
-                    </p>
+                    <div className="flex justify-between p-5">
+                      <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
+                        {user.filename}
+                      </p>
+                      <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
+                        views : {user.views}
+                      </p>
+                    </div>
 
                     <div className="mt-6 justify-between flex">
                       <LinkButton
@@ -276,30 +281,31 @@ export default function Main({
                         Profil
                       </LinkButton>
                       <div className="flex gap-x-4">
-                      <FormButton
-                        variant="base"
-                        onClick={() => {
-                          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                          user.mimetype.includes("msword") ||
-                          user.mimetype.includes(
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          )
-                            ? setOpenProfiles(true)
-                            : router.push(user.path);
-                          addView(user);
-                        }}
-                        className=" text-blue-500 hover:underline"
-                      >
-                        Lihat File
-                      </FormButton>
-                      <FormButton
-                        variant="base"
-                        className=" hover:underline"
-                        onClick={()=>{addLikes(user)}}
-                      >
-                        Like : {user.Like}
-                      </FormButton>
-
+                        <FormButton
+                          variant="base"
+                          onClick={() => {
+                            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                            user.mimetype.includes("msword") ||
+                            user.mimetype.includes(
+                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            )
+                              ? setOpenProfiles(true)
+                              : router.push(user.path);
+                            addView(user);
+                          }}
+                          className=" text-blue-500 hover:underline"
+                        >
+                          Lihat File
+                        </FormButton>
+                        <FormButton
+                          variant="base"
+                          className=" hover:underline"
+                          onClick={() => {
+                            addLikes(user);
+                          }}
+                        >
+                          Like : {user.Like}
+                        </FormButton>
                       </div>
                     </div>
                     {openProfiles && (
