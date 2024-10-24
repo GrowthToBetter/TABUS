@@ -80,9 +80,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    userData?.role === "GURU"
-      ? file.filter((file) => file.userRole === "SISWA")
-      : userData?.role === "VALIDATOR"
+    userData?.role === "VALIDATOR"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
@@ -146,7 +144,7 @@ export default function UploadPage({
   return (
     <div className="min-h-screen-minus-10">
       <>
-        {userData?.role === "GURU" ||
+        {
         userData?.role === "VALIDATOR" ||
         userData?.role === "ADMIN" ? (
           <>
@@ -177,9 +175,7 @@ export default function UploadPage({
           <></>
         )}
         <div
-          className={`flex justify-center items-center min-w-max h-fit ${
-            userData?.role == "SISWA" ? "pt-44" : ""
-          }`}
+          className={`flex justify-center items-center min-w-max h-fit `}
         >
           <div className="shadow-inner container w-[1300px] border-2 border-gray-300 rounded-lg h-fit">
             <div className="shadow-inner container p-10 w-[1300px] border-2 border-gray-300 rounded-lg ">

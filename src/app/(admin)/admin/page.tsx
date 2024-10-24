@@ -22,7 +22,7 @@ export default async function AdminPage() {
   });
   const dataAdmin = await prisma.user.findMany({
     where: {
-      AND: [{ NOT: { role: "SISWA" } }, { NOT: { role: "GURU" } }],
+      AND: [{ NOT: { role: "GURU" } }],
     },
     include: { userAuth: true },
   });

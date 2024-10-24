@@ -20,7 +20,7 @@ export default async function page() {
   });
   const getGenre=await prisma.genre.findMany();
   if (userData) {
-    if (session?.user?.email && !userData.title && userData?.role==="SISWA") return redirect("/pilihRole");
+    if (session?.user?.email && !userData.title && userData?.role==="GURU") return redirect("/pilihRole");
   }
 
   if (!session?.user?.email) return redirect("/signin");

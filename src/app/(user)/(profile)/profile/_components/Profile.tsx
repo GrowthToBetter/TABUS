@@ -110,15 +110,6 @@ export default function Profile({userData}:{userData:userFullPayload}) {
             />
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
-              {userData?.role === "SISWA" ? (<>
-              <TextField
-                type="text"
-                label="Absent"
-                name="absent"
-                defaultValue={userData?.absent as string}
-              />
-              </>): (<>
-              </>)}
               
               <TextField
                 type="text"

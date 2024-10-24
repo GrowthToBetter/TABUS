@@ -1,8 +1,0 @@
-/*
-  Warnings:
-
-  - Made the column `genre` on table `fileWork` required. This step will fail if there are existing NULL values in that column.
-
-*/
--- AlterTable
-ALTER TABLE `fileWork` MODIFY `genre` ENUM('Sastra', 'Seni', 'Fantasy', 'ScienceFiction') NOT NULL;

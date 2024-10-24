@@ -7,7 +7,7 @@ import { userFullPayload } from "@/utils/relationsip";
 
 export default async function studentData() {
   const studentData = await prisma.user.findMany({
-    where: { role: "SISWA" },
+    where: { role: "GURU" },
     include: { userAuth: true },
   });
   const session = await nextGetServerSession();

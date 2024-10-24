@@ -21,7 +21,7 @@ export default async function page() {
     },
   });
   let file:FileFullPayload[]=[];
-  if (session?.user?.role==="SISWA") {
+  if (session?.user?.role==="GURU") {
      file = await prisma.fileWork.findMany({
       where: {
         userId: session?.user?.id,
@@ -42,7 +42,7 @@ export default async function page() {
     });
   }
   if (userData) {
-    if (session?.user?.email && !userData.title && userData.role==="SISWA") return redirect("/pilihRole");
+    if (session?.user?.email && !userData.title && userData.role==="GURU") return redirect("/pilihRole");
   }
   return <Home userData={userData as userFullPayload} file={file} />;
 }

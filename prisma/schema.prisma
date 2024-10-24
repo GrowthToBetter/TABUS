@@ -17,7 +17,7 @@ model User {
   detail        Int?
   absent        String?
   Phone         String?
-  role          Role       @default(SISWA)
+  role          Role       @default(GURU)
   status        Status     @default(NOTGRADUATE)
   gender        Gender?    @default(Male)
   userAuth      UserAuth?
@@ -43,16 +43,15 @@ model fileWork {
   TaskValidator User[]        @relation("task_validator")
   user          User?         @relation("file_id", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   path          String
-  coverFile         String?
-  permisionId     String?
-  genre        String
-  Like          Int @default(0)
-  views         Int @default(0)
-  userRole      Role          @default(SISWA)
+  coverFile     String?
+  permisionId   String?
+  genre         String
+  Like          Int           @default(0)
+  views         Int           @default(0)
+  userRole      Role          @default(GURU)
   createdAt     DateTime      @default(now())
   comment       comment[]     @relation("comment_file")
 }
-
 
 model comment {
   id     String     @id @default(uuid()) @map("comment_id") @db.Char(36)
@@ -63,8 +62,8 @@ model comment {
 }
 
 model Genre {
-    id   String     @id @default(uuid()) @map("comment_id") @db.Char(36)
-    Genre    String
+  id    String @id @default(uuid()) @map("comment_id") @db.Char(36)
+  Genre String
 }
 
 enum Class {
@@ -74,9 +73,11 @@ enum Class {
 }
 
 enum Title {
-  RPL
-  PG
-  TKJ
+  TATA_BUSANA
+  TATA_BOGA
+  PERHOTELAN
+  KECANTIKAN
+  GURU_NORMADA
 }
 
 model UserAuth {
@@ -93,7 +94,6 @@ enum Status {
 }
 
 enum Role {
-  SISWA
   GURU
   ADMIN
   VALIDATOR
