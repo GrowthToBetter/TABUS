@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import "./../../globals.css";
 import ProfileAdmin from "./components/main/ProfileAdmin";
 import { Toaster } from "react-hot-toast";
+import AuthProviders from "@/lib/AuthProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -11,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Admin | Telkom Society",
+  title: "Admin | Ruang Belajar",
   description: "Find the Best Competition Partner to Succeed Together!",
 };
 
@@ -27,8 +28,10 @@ export default function RootLayout({
           <ProfileAdmin />
         </div>
         <div className="flex">
+        <AuthProviders>
           <Sidebar />
           {children}
+        </AuthProviders>
         </div>
         <Toaster />
       </body>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { DeleteUser } from "@/utils/server-action/userGetServerSession";
 import { Prisma } from "@prisma/client";
@@ -6,7 +7,10 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import toast from "react-hot-toast";
 import AddStudent from "./AddStudent";
 import ModalStudent from "./Modal";
-import { userFullPayload } from "@/utils/relationsip";
+import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
 
 export default function Table({ studentData, userData }: { studentData: Prisma.UserGetPayload<{ include: { userAuth: true } }>[]; userData: userFullPayload }) {
   const [modal, setModal] = useState(false);
@@ -65,6 +69,21 @@ export default function Table({ studentData, userData }: { studentData: Prisma.U
     setLoader(false);
   }, []);
 
+  const[schoolData, setSchoolData] = useState<SchoolFullPayload[]>();
+  const { data, error } = useSWR(
+    `/api/getSchool`,
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+  useEffect(() => {
+    if (data) {
+      const { dataFile } = data;
+      setSchoolData(dataFile);
+    }
+  }, [data]);
+
   if (loader) return <div>Loading</div>;
   return (
     <>
@@ -76,7 +95,7 @@ export default function Table({ studentData, userData }: { studentData: Prisma.U
         <div className="mt-6">
           <DataTable data={studentData} columns={columns} />
         </div>
-        {modal && <ModalStudent userData={userData} setIsOpenModal={setModal} data={modalData} />}
+        {modal && <ModalStudent Schools={schoolData as SchoolFullPayload[]} userData={userData} setIsOpenModal={setModal} data={modalData} />}
       </section>
     </>
   );

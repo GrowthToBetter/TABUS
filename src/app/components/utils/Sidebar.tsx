@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardIcon from "@/app/(admin)/admin/components/Icon/DashboardIcon";
 import StudentDataIcon from "@/app/(admin)/admin/components/Icon/StudentDataIcon";
 import TeamDataIcon from "@/app/(admin)/admin/components/Icon/TeamDataIcon";
 import AchievementIcon from "@/app/(admin)/admin/components/Icon/AchievementIcon";
 import { FormButton } from "./Button";
+import { userFullPayload } from "@/utils/relationsip";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
+import { useSession } from "next-auth/react";
 
 interface SideProps {
   title: string;
@@ -15,6 +19,21 @@ interface SideProps {
 }
 
 export default function Sidebar() {
+  const[userData, setUserData] = useState<userFullPayload>();
+  const { data: session, status } = useSession();
+  const { data, error } = useSWR(
+    `/api/user?userId=${session?.user?.id}`,
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+  useEffect(() => {
+    if (data) {
+      const { user } = data;
+      setUserData(user);
+    }
+  }, [data]);
   const [active, setActive] = useState(true);
   const SidebarItem: SideProps[] = [
     {
@@ -54,6 +73,14 @@ export default function Sidebar() {
                       </Link>
                     </li>
                   ))}
+                  {userData?.role === "SUPERADMIN" ? (
+                    <li >
+                    <Link href={"/admin/addSchool"} className="group flex items-center gap-x-4 rounded-[50px] px-5 py-3 text-black/70 font-normal text-primary-400 hover:bg-secondary-color hover:text-[#F45846] transition-all">
+                      <div><AchievementIcon/></div>
+                      <p className="text-[18px] font-semibold">Add School</p>
+                    </Link>
+                  </li>
+                  ):""}
                 </ul>
               </div>
             </div>

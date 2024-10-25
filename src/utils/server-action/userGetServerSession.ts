@@ -2,7 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
-import { Class,  Gender, Genre, RequestStatus, Role, Status, Title } from "@prisma/client";
+import {
+  Class,
+  Gender,
+  Genre,
+  RequestStatus,
+  Role,
+  Status,
+  Title,
+} from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { createUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
@@ -13,7 +21,7 @@ import { hash } from "bcrypt";
 import { FileFullPayload, userFullPayload } from "../relationsip";
 import { GaxiosResponse } from "googleapis-common";
 
-const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID
+const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 const credentials = {
   type: process.env.GOOGLE_ACCOUNT_TYPE,
   project_id: process.env.GOOGLE_PROJECT_ID,
@@ -124,38 +132,42 @@ export const updateIdentity = async (id: string, data: FormData) => {
   }
 };
 
-export const commentFile=async (comment: string, file:{connect:{id:string}}, user:{connect:{id:string}}) => {
+export const commentFile = async (
+  comment: string,
+  file: { connect: { id: string } },
+  user: { connect: { id: string } }
+) => {
   try {
     const createComment = await prisma.comment.create({
       data: {
         file,
-        user:{
-          connect:{
-            id:user.connect.id
-          }
+        user: {
+          connect: {
+            id: user.connect.id,
+          },
         },
         Text: comment,
-      }
-    })
-    if(!createComment){
+      },
+    });
+    if (!createComment) {
       throw new Error("eror");
     }
     return createComment;
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
+};
 
 export const updateStatus = async (id: string, data: FormData) => {
   try {
     const status = data.get("status") as RequestStatus;
-    const update= await prisma.fileWork.update({
+    const update = await prisma.fileWork.update({
       where: { id: id },
       data: {
-        status
+        status,
       },
-    })
-    if(!update){
+    });
+    if (!update) {
       throw new Error("eror");
     }
     revalidatePath("/AjukanKarya");
@@ -163,13 +175,13 @@ export const updateStatus = async (id: string, data: FormData) => {
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
-export const updateUploadFileByLink = async ( data: FormData) => {
+};
+export const updateUploadFileByLink = async (data: FormData) => {
   try {
     const name = data.get("name") as string;
     const type = data.get("type") as string;
-    const Genre=data.get("Genre") ;
-    if(!Genre){
+    const Genre = data.get("Genre");
+    if (!Genre) {
       throw new Error("eror");
     }
     const size = 0;
@@ -188,7 +200,7 @@ export const updateUploadFileByLink = async ( data: FormData) => {
         userRole: role,
       },
     });
-    if(!uploadedFile){
+    if (!uploadedFile) {
       throw new Error("eror");
     }
     revalidatePath("/AjukanKarya");
@@ -196,9 +208,65 @@ export const updateUploadFileByLink = async ( data: FormData) => {
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
+};
 
-export const UpdateGenreByIdInAdmin = async (userData:userFullPayload , id: string, data: FormData) => {
+export const UpdateSchoolByIdInAdmin = async (
+  userData: userFullPayload,
+  id: string,
+  data: FormData
+) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user) {
+      return { status: 401, message: "Auth Required" };
+    }
+    if (userData?.role !== "SUPERADMIN") {
+      return { status: 401, message: "Unauthorize" };
+    }
+    const name = data.get("Genre") as string;
+
+    const findEmail = await prisma.schoolOrigin.findFirst({
+      where: { name },
+    });
+
+    if (!findEmail && id == null) {
+      const create = await prisma.schoolOrigin.create({
+        data: {
+          name,
+        },
+      });
+      if (!create) throw new Error("Failed to create admin!");
+      revalidatePath("/admin");
+      return { status: 200, message: "Create Success!" };
+    } else if (id) {
+      const findUser = await prisma.schoolOrigin.findUnique({
+        where: { id },
+      });
+      if (findUser) {
+        const update = await prisma.schoolOrigin.update({
+          where: { id: id ?? findUser?.id },
+          data: {
+            name,
+          },
+        });
+        console.log(update);
+        if (!update) throw new Error("Failed to update admin!");
+        revalidatePath("/admin");
+        return { status: 200, message: "Update Success!" };
+      } else throw new Error("User not found!");
+    }
+    revalidatePath("/admin");
+    return { status: 200, message: "Update Success!" };
+  } catch (error) {
+    console.error("Error update user:", error);
+    throw new Error((error as Error).message);
+  }
+};
+export const UpdateGenreByIdInAdmin = async (
+  userData: userFullPayload,
+  id: string,
+  data: FormData
+) => {
   try {
     const session = await nextGetServerSession();
     if (!session?.user) {
@@ -216,7 +284,7 @@ export const UpdateGenreByIdInAdmin = async (userData:userFullPayload , id: stri
     if (!findEmail && id == null) {
       const create = await prisma.genre.create({
         data: {
-          Genre
+          Genre,
         },
       });
       if (!create) throw new Error("Failed to create admin!");
@@ -230,7 +298,7 @@ export const UpdateGenreByIdInAdmin = async (userData:userFullPayload , id: stri
         const update = await prisma.genre.update({
           where: { id: id ?? findUser?.id },
           data: {
-            Genre
+            Genre,
           },
         });
         console.log(update);
@@ -246,7 +314,11 @@ export const UpdateGenreByIdInAdmin = async (userData:userFullPayload , id: stri
     throw new Error((error as Error).message);
   }
 };
-export const UpdateUserByIdInAdmin = async (userData:userFullPayload ,id: string, data: FormData) => {
+export const UpdateUserByIdInAdmin = async (
+  userData: userFullPayload,
+  id: string,
+  data: FormData
+) => {
   try {
     const session = await nextGetServerSession();
     if (!session?.user) {
@@ -259,6 +331,10 @@ export const UpdateUserByIdInAdmin = async (userData:userFullPayload ,id: string
     const name = data.get("name") as string;
     const password = data.get("password") as string;
     const role = data.get("role") as Role;
+    let school = data.get("School") as string;
+    if (!school) {
+      school = userData?.SchoolOrigin as string;
+    }
 
     const findEmail = await prisma.user.findUnique({
       where: { email },
@@ -271,6 +347,7 @@ export const UpdateUserByIdInAdmin = async (userData:userFullPayload ,id: string
           email,
           name,
           role,
+          SchoolOrigin: school,
           userAuth: {
             create: {
               password: await hash(password, 10),
@@ -293,6 +370,7 @@ export const UpdateUserByIdInAdmin = async (userData:userFullPayload ,id: string
           data: {
             name: name ?? findUser?.name,
             email: email ?? findUser?.email,
+            SchoolOrigin: school ?? (findUser?.SchoolOrigin as string),
             role: role ?? (findUser?.role as Role),
             userAuth: {
               update: {
@@ -315,14 +393,22 @@ export const UpdateUserByIdInAdmin = async (userData:userFullPayload ,id: string
   }
 };
 
-export const UpdateAdminById = async (id: string, data: FormData, userData: userFullPayload) => {
+export const UpdateAdminById = async (
+  id: string,
+  data: FormData,
+  userData: userFullPayload
+) => {
   try {
     const session = await nextGetServerSession();
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData?.role !== "ADMIN") {
+    if (userData?.role !== "ADMIN" && userData?.role !== "SUPERADMIN") {
       return { status: 401, message: "Unauthorize" };
+    }
+    let school = data.get("School") as string;
+    if (!school) {
+      school = userData?.SchoolOrigin as string;
     }
     const email = data.get("email") as string;
     const name = data.get("name") as string;
@@ -339,7 +425,12 @@ export const UpdateAdminById = async (id: string, data: FormData, userData: user
         data: {
           email,
           name,
+          photo_profile:
+            "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+          cover:
+            "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
           role,
+          SchoolOrigin: school,
           userAuth: {
             create: {
               password: await hash(password, 10),
@@ -362,7 +453,12 @@ export const UpdateAdminById = async (id: string, data: FormData, userData: user
           data: {
             name: name ?? findUser?.name,
             email: email ?? findUser?.email,
+            SchoolOrigin: school,
             role: role ?? (findUser?.role as Role),
+            photo_profile:
+              "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+            cover:
+              "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
             userAuth: {
               update: {
                 last_login: new Date(),
@@ -384,13 +480,13 @@ export const UpdateAdminById = async (id: string, data: FormData, userData: user
   }
 };
 
-export const DeleteGenre = async (id: string, userData:userFullPayload) => {
+export const DeleteGenre = async (id: string, userData: userFullPayload) => {
   try {
     const session = await nextGetServerSession();
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData.role === "SISWA") {
+    if (userData.role === "GURU") {
       return { status: 401, message: "Unauthorize" };
     }
     const del = await prisma.genre.delete({
@@ -406,7 +502,31 @@ export const DeleteGenre = async (id: string, userData:userFullPayload) => {
     console.error("Error deleting user:", error);
     throw new Error((error as Error).message);
   }
-}
+};
+
+export const DeleteSchool = async (id: string, userData: userFullPayload) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user) {
+      return { status: 401, message: "Auth Required" };
+    }
+    if (userData.role === "GURU") {
+      return { status: 401, message: "Unauthorize" };
+    }
+    const del = await prisma.schoolOrigin.delete({
+      where: { id },
+    });
+    if (!del) {
+      return { status: 400, message: "Failed to delete user!" };
+    }
+    revalidatePath("/admin/studentData");
+    revalidatePath("/admin");
+    return { status: 200, message: "Delete Success!" };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error((error as Error).message);
+  }
+};
 
 export const DeleteUser = async (id: string) => {
   try {
@@ -441,7 +561,7 @@ export const DeleteFile = async (id: string, file: FileFullPayload) => {
     const driveResponse = await drive.files.delete({
       fileId: file.permisionId as string,
     });
-    if(!driveResponse){
+    if (!driveResponse) {
       const del = await prisma.fileWork.delete({
         where: { id },
       });
@@ -490,14 +610,20 @@ export const updateRole = async (id: string, data: FormData) => {
   }
 };
 
-export const createFile=async (file : File, driveResponse:GaxiosResponse<drive_v3.Schema$File>, user:userFullPayload, data:FormData, drive:drive_v3.Drive)=>{
-  try{
-    const genre=data.get("Genre");
-    if(genre === "undefined"){
+export const createFile = async (
+  file: File,
+  driveResponse: GaxiosResponse<drive_v3.Schema$File>,
+  user: userFullPayload,
+  data: FormData,
+  drive: drive_v3.Drive
+) => {
+  try {
+    const genre = data.get("Genre");
+    if (genre === "undefined") {
       await drive.files.delete({ fileId: driveResponse.data.id as string });
       throw new Error("eror");
     }
-    const create=await prisma.fileWork.create({
+    const create = await prisma.fileWork.create({
       data: {
         filename: file.name,
         mimetype: file.type,
@@ -508,18 +634,17 @@ export const createFile=async (file : File, driveResponse:GaxiosResponse<drive_v
         status: "PENDING",
         userRole: user.role,
         permisionId: driveResponse.data.id || "",
-      }
-    })
-    if(!create){
+      },
+    });
+    if (!create) {
       throw new Error("eror");
     }
     revalidatePath("/AjukanKarya");
     return create;
-  }catch(error){
+  } catch (error) {
     throw new Error((error as Error).message);
   }
-  
-}
+};
 
 export const DeleteRoleFileFromNotif = async (id: string) => {
   try {
@@ -545,44 +670,44 @@ export const DeleteRoleFileFromNotif = async (id: string) => {
   }
 };
 
-export const addLike=async (id :string,like: number)=>{
+export const addLike = async (id: string, like: number) => {
   try {
-    const update= await prisma.fileWork.update({
+    const update = await prisma.fileWork.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        Like: like
-      }
-    })
-    if(!update){
-      throw new Error("Gagal Menambahkan Like")
+        Like: like,
+      },
+    });
+    if (!update) {
+      throw new Error("Gagal Menambahkan Like");
     }
-    revalidatePath("/")
+    revalidatePath("/");
     return update;
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
-export const addViews=async (id :string, views: number)=>{
+};
+export const addViews = async (id: string, views: number) => {
   try {
-    const update= await prisma.fileWork.update({
+    const update = await prisma.fileWork.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        views
-      }
-    })
-    if(!update){
-      throw new Error("Gagal Menambahkan Like")
+        views,
+      },
+    });
+    if (!update) {
+      throw new Error("Gagal Menambahkan Like");
     }
-    revalidatePath("/")
+    revalidatePath("/");
     return update;
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
+};
 
 export const UpdateGeneralProfileById = async (data: FormData) => {
   try {

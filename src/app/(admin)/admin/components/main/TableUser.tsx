@@ -6,7 +6,9 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import toast from "react-hot-toast";
 import ModalUser from "./ModalUser";
 import AddUser from "./AddUser";
-import { userFullPayload } from "@/utils/relationsip";
+import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
 
 export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.UserGetPayload<{ include: { userAuth: true } }>[]; userData: userFullPayload }) {
   const [modal, setModal] = useState(false);
@@ -68,6 +70,20 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
     setLoader(false);
   }, []);
 
+  const[schoolData, setSchoolData] = useState<SchoolFullPayload[]>();
+  const { data, error } = useSWR(
+    `/api/getSchool`,
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+  useEffect(() => {
+    if (data) {
+      const { dataFile } = data;
+      setSchoolData(dataFile);
+    }
+  }, [data]);
   if (loader) return <div>Loading</div>;
 
   return (
@@ -84,7 +100,7 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
           </div>
         </section>
       </section>
-      {modal && <ModalUser userData={userData} setIsOpenModal={setModal} data={modalData} />}
+      {modal && <ModalUser Schools={schoolData as SchoolFullPayload[]} userData={userData} setIsOpenModal={setModal} data={modalData} />}
     </>
   );
 }

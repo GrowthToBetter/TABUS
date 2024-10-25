@@ -2,22 +2,37 @@
 import { FormButton } from "@/app/components/utils/Button";
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import ModalProfile from "@/app/components/utils/Modal";
-import { userFullPayload } from "@/utils/relationsip";
+import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
 import { UpdateUserByIdInAdmin } from "@/utils/server-action/userGetServerSession";
 import { Prisma, Role } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function ModalStudent({ setIsOpenModal, data, userData }: { setIsOpenModal: Dispatch<SetStateAction<boolean>>; data?: Prisma.UserGetPayload<{ include: { userAuth: true } }> | null ; userData: userFullPayload }) {
+export default function ModalStudent({
+  setIsOpenModal,
+  data,
+  userData,
+  Schools,
+}: {
+  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+  data?: Prisma.UserGetPayload<{ include: { userAuth: true } }> | null;
+  userData: userFullPayload;
+  Schools: SchoolFullPayload[];
+}) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const {data: session, status} = useSession();
   const HandleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const toastId = toast.loading("Loading...");
       const formData = new FormData(e.target);
-      const update = await UpdateUserByIdInAdmin(userData, data?.id as string, formData);
+      const update = await UpdateUserByIdInAdmin(
+        userData,
+        data?.id as string,
+        formData
+      );
       if (update) {
         toast.success(update.message as string, { id: toastId });
         setIsLoading(false);
@@ -29,25 +44,75 @@ export default function ModalStudent({ setIsOpenModal, data, userData }: { setIs
       setIsLoading(false);
     }
   };
-
+  const role =
+    session?.user?.role == "SUPERADMIN"
+      ? Object.values(Role).filter((x) => x !== "DELETE" && x !== "SUPERADMIN")
+      : Object.values(Role).filter(
+          (x) => x !== "DELETE" && x !== "SUPERADMIN" && x !== "ADMIN"
+        );
+  const filteredSchool: string[] = [];
+  if(Schools){
+    for (const School of Schools) {
+      if (!filteredSchool.includes(School.name)) {
+        filteredSchool.push(School.name);
+      }
+    }
+  }
   return (
     <ModalProfile title="Data User" onClose={() => setIsOpenModal(false)}>
       <form onSubmit={HandleSubmit}>
-        <TextField required type="text" label="Name" name="name" defaultValue={data?.name as string} placeholder="Nama Lengkap" />
-        <TextField required type="text" label="Email" name="email" defaultValue={data?.email as string} placeholder="Email" />
-        <TextField type="password" label="Password" name="password" disabled={data ? true : false} readOnly={data ? true : false} placeholder="Password" />
+        <TextField
+          required
+          type="text"
+          label="Name"
+          name="name"
+          defaultValue={data?.name as string}
+          placeholder="Nama Lengkap"
+        />
+        <TextField
+          required
+          type="text"
+          label="Email"
+          name="email"
+          defaultValue={data?.email as string}
+          placeholder="Email"
+        />
+        <TextField
+          type="password"
+          label="Password"
+          name="password"
+          disabled={data ? true : false}
+          readOnly={data ? true : false}
+          placeholder="Password"
+        />
         <DropDown
           name="role"
           defaultValue={data?.role}
           label="Role"
-          options={Object.values(Role).map((x) => ({
+          options={role.map((x) => ({
             label: x,
             value: x,
           }))}
           required
         />
+        {session?.user?.role == "SUPERADMIN" && (
+          <DropDown
+            name="School"
+            defaultValue={data?.SchoolOrigin as string}
+            label="School"
+            options={filteredSchool.map((x) => ({
+              label: x,
+              value: x,
+            }))}
+            required
+          />
+        )}
         <div className="flex justify-end w-full gap-x-4 pb-4">
-          <FormButton type="button" onClick={() => setIsOpenModal(false)} variant="white">
+          <FormButton
+            type="button"
+            onClick={() => setIsOpenModal(false)}
+            variant="white"
+          >
             Close
           </FormButton>
           <FormButton type="submit" variant="base">
@@ -55,7 +120,13 @@ export default function ModalStudent({ setIsOpenModal, data, userData }: { setIs
               "Submit"
             ) : (
               <div className="flex gap-x-3 items-center">
-                <svg aria-hidden="true" className="inline w-5 h-5 animate-spin text-blue-900 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  aria-hidden="true"
+                  className="inline w-5 h-5 animate-spin text-blue-900 fill-white"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                     fill="currentColor"

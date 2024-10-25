@@ -37,6 +37,11 @@ export const findFiles=async(filter: Prisma.fileWorkWhereInput) => {
     include: { user:{include:{userAuth:true}}, TaskValidator:true, comment:{include:{user:true}}},
   });
 }
+export const findSchools=async(filter: Prisma.SchoolOriginWhereInput) => {
+  return await prisma.schoolOrigin.findMany({
+    where: filter,
+  });
+}
 
 export const updateFile=async(where: Prisma.fileWorkWhereUniqueInput, update: Prisma.fileWorkUncheckedUpdateInput) => {
   return await prisma.fileWork.update({ where, data: update });

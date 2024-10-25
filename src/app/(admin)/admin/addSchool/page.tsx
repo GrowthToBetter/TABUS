@@ -1,12 +1,12 @@
 import React from "react";
 import AdminHeaders from "../components/main/AdminHeaders";
 import prisma from "@/lib/prisma";
-import Table from "../studentData/_components/TableGenre";
+import Table from "../studentData/_components/tableSchool";
 import { userFullPayload } from "@/utils/relationsip";
 import { nextGetServerSession } from "@/lib/authOption";
 
 export default async function teamData() {
-  const dataCategory = await prisma.genre.findMany();
+  const dataSchool = await prisma.schoolOrigin.findMany();
   const session = await nextGetServerSession();
   const userData = await prisma.user.findFirst({
     where: {
@@ -22,7 +22,7 @@ export default async function teamData() {
   return (
     <div className="flex flex-col">
       <AdminHeaders data="Data Category" />
-      <Table userData={userData as userFullPayload} dataGenre={dataCategory} />
+      <Table userData={userData as userFullPayload} dataSchool={dataSchool} />
     </div>
   );
 }

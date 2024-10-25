@@ -14,15 +14,27 @@ interface cardProps {
 
 
 export default async function AdminPage() {
-  const dataUser = await findAllUsers({
-    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }],
+  const session = await nextGetServerSession();
+  const userData = await prisma.user.findFirst({
+    where: {
+      id: session?.user?.id,
+    },
+    include: {
+      userAuth: true,
+      File: { include: { TaskValidator: true } },
+      taskValidator: { include: { user: true } },
+      comment: { include: { file: true } },
+    },
+  });
+  const dataUser = userData?.role === "SUPERADMIN" ? await findAllUsers({AND: [ { NOT: { role: "DELETE" } }, { NOT: { role: "SUPERADMIN" } }]}) : await findAllUsers({
+    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "VALIDATOR" } }, {NOT:{role: "SUPERADMIN"}}],
   });
   const dataPaper = await findFiles({
     AND: [{ NOT: { status: "DENIED" } }, { NOT: { status: "PENDING" } }],
   });
-  const dataAdmin = await prisma.user.findMany({
+  const dataAdmin = userData?.role==="SUPERADMIN" ? await prisma.user.findMany({ where: { AND:[{role: "SUPERADMIN" }, {role: "ADMIN"}]}, include: { userAuth: true} }) :  await prisma.user.findMany({
     where: {
-      AND: [{ NOT: { role: "GURU" } }],
+      AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "SUPERADMIN" } }],
     },
     include: { userAuth: true },
   });
@@ -47,18 +59,7 @@ export default async function AdminPage() {
       desc: "Malang Telkom Vocational School Achievements",
     },
   ];
-  const session = await nextGetServerSession();
-  const userData = await prisma.user.findFirst({
-    where: {
-      id: session?.user?.id,
-    },
-    include: {
-      userAuth: true,
-      File: { include: { TaskValidator: true } },
-      taskValidator: { include: { user: true } },
-      comment: { include: { file: true } },
-    },
-  });
+  
   return (
     <div className="flex flex-col relative">
       <section className="w-full">

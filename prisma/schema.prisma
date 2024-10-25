@@ -24,6 +24,7 @@ model User {
   taskValidator fileWork[] @relation("task_validator")
   Sugestion     String?
   ClassNumber   String?
+  SchoolOrigin  String?
   validatorId   String?
   generation    String?
   cover         String?
@@ -53,6 +54,11 @@ model fileWork {
   comment       comment[]     @relation("comment_file")
 }
 
+model SchoolOrigin{
+  id      String     @id @default(uuid()) @map("school_id") @db.Char(36)
+  name    String
+}
+
 model comment {
   id     String     @id @default(uuid()) @map("comment_id") @db.Char(36)
   Text   String?
@@ -62,7 +68,7 @@ model comment {
 }
 
 model Genre {
-  id    String @id @default(uuid()) @map("comment_id") @db.Char(36)
+  id    String @id @default(uuid()) @map("genre_id") @db.Char(36)
   Genre String
 }
 
@@ -96,6 +102,7 @@ enum Status {
 enum Role {
   GURU
   ADMIN
+  SUPERADMIN
   VALIDATOR
   DELETE
 }
