@@ -109,7 +109,7 @@ export const authOptions: AuthOptions = {
           const userDatabase = await findUser({ email: user.email });
           if (!userDatabase) {
             const role =
-              user.email === "dummyakun12311@gmail.com" ? "ADMIN" : null;
+              user.email === "dummyakun12311@gmail.com" ? "SUPERADMIN" : null;
               
             if (!role) {
               return "/AccessDenied";

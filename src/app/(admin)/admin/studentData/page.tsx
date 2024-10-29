@@ -6,8 +6,8 @@ import { nextGetServerSession } from "@/lib/authOption";
 import { userFullPayload } from "@/utils/relationsip";
 
 export default async function studentData() {
-  const studentData = await prisma.user.findMany({
-    where: { role: "GURU" },
+  const studentData =  await prisma.user.findMany({
+    where: {OR: [ { role:"VALIDATOR" }, {role:"GURU"}]},
     include: { userAuth: true },
   });
   const session = await nextGetServerSession();
@@ -22,6 +22,7 @@ export default async function studentData() {
       comment: { include: { file: true } },
     },
   });
+  console.log(studentData);
 
   return (
     <div className="flex flex-col">

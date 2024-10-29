@@ -272,8 +272,10 @@ export const UpdateGenreByIdInAdmin = async (
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData?.role !== "ADMIN") {
-      return { status: 401, message: "Unauthorize" };
+    if (userData?.role !== "SUPERADMIN") {
+      if(userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
     const Genre = data.get("Genre") as string;
 
@@ -324,9 +326,12 @@ export const UpdateUserByIdInAdmin = async (
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData?.role !== "ADMIN") {
-      return { status: 401, message: "Unauthorize" };
+    if (userData?.role !== "SUPERADMIN") {
+      if(userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
+
     const email = data.get("email") as string;
     const name = data.get("name") as string;
     const password = data.get("password") as string;
@@ -403,8 +408,10 @@ export const UpdateAdminById = async (
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData?.role !== "ADMIN" && userData?.role !== "SUPERADMIN") {
-      return { status: 401, message: "Unauthorize" };
+    if (userData?.role !== "SUPERADMIN") {
+      if(userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
     let school = data.get("School") as string;
     if (!school) {
@@ -486,8 +493,10 @@ export const DeleteGenre = async (id: string, userData: userFullPayload) => {
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData.role === "GURU") {
-      return { status: 401, message: "Unauthorize" };
+    if (userData?.role !== "SUPERADMIN") {
+      if(userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
     const del = await prisma.genre.delete({
       where: { id },
@@ -510,8 +519,10 @@ export const DeleteSchool = async (id: string, userData: userFullPayload) => {
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (userData.role === "GURU") {
-      return { status: 401, message: "Unauthorize" };
+    if (userData?.role !== "SUPERADMIN") {
+      if(userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
     const del = await prisma.schoolOrigin.delete({
       where: { id },
@@ -534,8 +545,10 @@ export const DeleteUser = async (id: string) => {
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    if (session?.user.role === "SISWA") {
-      return { status: 401, message: "Unauthorize" };
+    if (session?.user?.role !== "SUPERADMIN") {
+      if(session?.user?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
     }
     const del = await prisma.user.delete({
       where: { id },

@@ -32,7 +32,7 @@ export default async function AdminPage() {
   const dataPaper = await findFiles({
     AND: [{ NOT: { status: "DENIED" } }, { NOT: { status: "PENDING" } }],
   });
-  const dataAdmin = userData?.role==="SUPERADMIN" ? await prisma.user.findMany({ where: { AND:[{role: "SUPERADMIN" }, {role: "ADMIN"}]}, include: { userAuth: true} }) :  await prisma.user.findMany({
+  const dataAdmin = userData?.role==="SUPERADMIN" ? await prisma.user.findMany({ where: { OR:[{role: "SUPERADMIN" }, {role: "ADMIN"}]}, include: { userAuth: true} }) :  await prisma.user.findMany({
     where: {
       AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "SUPERADMIN" } }],
     },

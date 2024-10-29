@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { FormButton } from "@/app/components/utils/Button";
 import { DropDown, TextField } from "@/app/components/utils/Form";

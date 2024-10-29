@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { DeleteUser } from "@/utils/server-action/userGetServerSession";
 import { Prisma } from "@prisma/client";
