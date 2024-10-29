@@ -47,7 +47,7 @@ export default function Navbar() {
               onClose={() => {
                 setTutorial(false);
               }}
-              title="Tutorial"
+              title="Panduan"
             >
               <div>
                 <ul>
@@ -99,7 +99,7 @@ export default function Navbar() {
                 setTutorial(true);
               }}
             >
-              Turorial
+              Panduan
             </FormButton>
             <div>
               {status === "unauthenticated" ? (
