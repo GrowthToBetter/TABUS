@@ -51,14 +51,10 @@ export default function Signin() {
     <React.Fragment>
       <main className="min-h-screen-minus-10">
         <div className="flex max-w-full w-full h-screen items-center justify-center relative">
-          <div className="w-1/2 hidden lg:inline-block relative pt-10">
-          {/* Gambar */}
-          </div>
-          <div className="lg:w-1/2 w-full h-screen pt-24 px-4 lg:px-0">
-          {/* LOGO */}
-            <div className="max-w-lg mx-auto mt-2">
-              <h3 className="text-[35.4px] font-medium text-center text-black leading-none">Welcome to Ruang Baca</h3>
-              <p className="text-[20px] font-medium text-black text-center opacity-70 lg:-mt-2">Be The best with Us</p>
+          <div className="lg:w-1/2 w-full h-screen pt-24 px-4 lg:px-0 flex items-center flex-col justify-center bg-Primary">
+            <div className="max-w-lg mx-auto mt-2 border-2 border-double border-Secondary rounded-lg p-10 bg-white">
+              <h3 className="text-[35.4px] font-medium text-center text-black leading-none m-3">Welcome to Ruang Belajar</h3>
+              <p className="text-[20px] font-medium text-black text-center opacity-70 lg:-mt-2">Optimalkan Karya Guru</p>
 
               {loading ? (
                 <button className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-Secondary focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full">

@@ -18,9 +18,6 @@ export default async function page() {
       comment: { include: { file: true } },
     },
   });
-  if (userData) {
-    if (session?.user?.email && !userData.title && userData?.role==="GURU") return redirect("/pilihRole");
-  }
   if (!session?.user?.email) return redirect("/signin");
   return <Home userData={userData as userFullPayload} />;
 }

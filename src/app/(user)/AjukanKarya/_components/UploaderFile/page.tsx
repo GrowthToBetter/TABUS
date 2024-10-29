@@ -1,4 +1,4 @@
-import { DropDown } from "@/app/components/utils/Form";
+import { DropDown, TextField } from "@/app/components/utils/Form";
 import { GenreFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useCallback, useState } from "react";
@@ -16,10 +16,11 @@ interface UploadedFile {
 }
 
 export default function FileUploader({
-  userData, genre
+  userData,
+  genre,
 }: {
   userData: userFullPayload;
-  genre: GenreFullPayload[]
+  genre: GenreFullPayload[];
 }) {
   const { data: session } = useSession();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -27,7 +28,13 @@ export default function FileUploader({
   const [selectedGenre, setSelectedGenre] = useState<{ [key: string]: string }>(
     {}
   );
+  const [selectedClass, setSelectedClass] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const handleKelasChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSelectedClass(event.target.value);
+  };
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -45,6 +52,7 @@ export default function FileUploader({
             const formData = new FormData();
             formData.append("file", file);
             formData.append("Genre", selectedGenre[userData.id] as string);
+            formData.append("kelas", selectedClass as string);
             const response = await fetch(
               `/api/upload?userId=${session?.user?.id}`,
               {
@@ -74,7 +82,7 @@ export default function FileUploader({
         setIsLoading(false);
       }
     },
-    [selectedGenre, session?.user?.id, userData.id]
+    [selectedClass, selectedGenre, session?.user?.id, userData.id]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -86,39 +94,68 @@ export default function FileUploader({
       [userId]: newClass,
     }));
   };
-  const filteredGenre:string[]=[];
-  for(const Genre of genre){
-    if(!filteredGenre.includes(Genre.Genre)){
-      filteredGenre.push(Genre.Genre)
-  }
-
+  const filteredGenre: string[] = [];
+  for (const Genre of genre) {
+    if (!filteredGenre.includes(Genre.Genre)) {
+      filteredGenre.push(Genre.Genre);
+    }
   }
   return (
     <div className="h-screen">
+      <div className="flex justify-center items-center">
+        <TextField
+          type="radio"
+          className="m-3"
+          name="kelas"
+          value="X"
+          label="Kelas X"
+          handleChange={handleKelasChange}
+        />
+        <TextField
+          type="radio"
+          className="m-3"
+          name="kelas"
+          value="XI"
+          label="Kelas XI"
+          handleChange={handleKelasChange}
+        />
+        <TextField
+          type="radio"
+          className="m-3"
+          name="kelas"
+          value="XII"
+          label="Kelas XII"
+          handleChange={handleKelasChange}
+        />
+        <DropDown
+          label="Genre"
+          options={filteredGenre.map((classes) => ({
+            label: classes,
+            value: classes,
+          }))}
+          className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+          name="Genre"
+          value={selectedGenre[userData?.id || ""] || undefined}
+          handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+            handleRoleChangeGenre(userData.id, e.target.value)
+          }
+        />
+      </div>
       <div
         {...getRootProps()}
         className="border-2 border-dashed border-gray-300 rounded-md p-5 text-center cursor-pointer hover:border-gray-400 transition-colors"
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p>Drop the files here ...</p>
+          <>
+            <p>Drop the files here ...</p>
+          </>
         ) : (
-          <p>Drag {"'n'"} drop any files here, or click to select files</p>
+          <>
+            <p>Drag {"'n'"} drop any files here, or click to select files</p>
+          </>
         )}
       </div>
-      <DropDown
-        label="Genre"
-        options={filteredGenre.map((classes) => ({
-          label: classes,
-          value: classes,
-        }))}
-        className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
-        name="Genre"
-        value={selectedGenre[userData?.id || ""] || undefined}
-        handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
-          handleRoleChangeGenre(userData.id, e.target.value)
-        }
-      />
 
       {error && (
         <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">

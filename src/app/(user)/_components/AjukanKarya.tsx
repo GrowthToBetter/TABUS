@@ -14,7 +14,10 @@ import ModalProfile from "@/app/components/utils/Modal";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Genre, RequestStatus, Role } from "@prisma/client";
-import { DeleteFile, updateUploadFileByLink } from "@/utils/server-action/userGetServerSession";
+import {
+  DeleteFile,
+  updateUploadFileByLink,
+} from "@/utils/server-action/userGetServerSession";
 import toast from "react-hot-toast";
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import ModalEditCoverFile from "../AjukanKarya/_components/ModalEditCoverFile";
@@ -67,7 +70,7 @@ export default function UploadPage({
       formData.set("role", userData?.role as Role);
       for (const userId in selectedGenre) {
         formData.set("Genre", selectedGenre[userId]);
-        const update = await updateUploadFileByLink(formData);
+        const update = await updateUploadFileByLink(formData, userData);
         if (!update) {
           toast.error("error adding link");
         }
@@ -90,10 +93,10 @@ export default function UploadPage({
       filteredGenre.push(Genre.Genre);
     }
   }
-  const handleDelete=async (id:string, file:FileFullPayload)=>{
+  const handleDelete = async (id: string, file: FileFullPayload) => {
     try {
       const loading = toast.loading("Loading...");
-      const deleteExistingFile = await DeleteFile(id, file );
+      const deleteExistingFile = await DeleteFile(id, file);
       if (!deleteExistingFile) {
         toast.error("error delete this file");
       }
@@ -102,7 +105,7 @@ export default function UploadPage({
     } catch (error) {
       throw new Error((error as Error).message);
     }
-  }
+  };
 
   return (
     <div className="pt-44">
@@ -176,9 +179,25 @@ export default function UploadPage({
                       placeholder="Link File"
                       required={true}
                     />
-                    <FormButton type="submit" variant="base">
-                      Submit
-                    </FormButton>
+                    <div className="flex justify-between">
+                      <TextField
+                        type="radio"
+                        name="kelas"
+                        value="X"
+                        label="Kelas X"
+                      />
+                      <TextField
+                        type="radio"
+                        name="kelas"
+                        value="XI"
+                        label="Kelas XI"
+                      />
+                      <TextField
+                        type="radio"
+                        name="kelas"
+                        value="XII"
+                        label="Kelas XII"
+                      />
                     <DropDown
                       label="Genre"
                       options={filteredGenre.map((classes) => ({
@@ -195,6 +214,10 @@ export default function UploadPage({
                         )
                       }
                     />
+                    </div>
+                    <FormButton type="submit" variant="base">
+                      Submit
+                    </FormButton>
                   </form>
                 </ModalProfile>
               )}
@@ -256,7 +279,7 @@ export default function UploadPage({
                           setIsOpenModal={setCover}
                         />
                       )}
-                      
+
                       <>
                         {openProfiles[file.id] && (
                           <ModalProfile

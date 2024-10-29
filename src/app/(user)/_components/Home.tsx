@@ -38,12 +38,12 @@ export default function Home({ userData }: { userData: userFullPayload }) {
       <div className="bg-Primary min-w-max p-10 flex flex-col justify-center items-center relative">
         <div className="flex justify-center relative mt-14 md:m-0 flex-col md:flex-row items-center h-screen w-fit bg-Primary">
           <div className="w-full mt-20">
-            <h1 className="text-3xl font-bold md:w-[400px] w-[200px]">
+            <h1 className="md:text-6xl text-4xl font-bold md:w-[600px] w-[300px]">
               Berjalan Bersama Menghasilkan Ribuan Karya
             </h1>
-            <p className="md:w-[400px] w-[200px] pt-5 text-sm font-semibold">
-              T A B U S Tempatmu Untuk Menciptakan Banyak Bakat Hebat <br />
-              Berjalan Bersama Untuk Generasi Hebat
+            <p className="md:w-[600px] w-[300px] pt-5 md:text-base text-sm font-semibold">
+              Optimalisasi Karya Guru dalam ruang Belajar <br />
+              Sebagai Pendukung dari platform merdeka Belajar
             </p>
             <FormButton
               onClick={() => router.push("/AjukanKarya")}
@@ -53,7 +53,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
               Ajukan Sekarang
             </FormButton>
           </div>
-          <Image src={Gambar} alt="Gambar" width={520} height={400} />
+          <Image src={Gambar} alt="Gambar" width={620} height={500} />
         </div>
         <div className="h-[100px] w-full pt-10 bg-[#F5F8FA]">
           <ul className="flex justify-evenly font-semibold  ">
@@ -124,7 +124,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
               <span className="text-red-500">R</span>uang Belajar
             </h1>
             <p className="xl:text-[32px] lg:text-[30px] md:text-[28px] sm:text-[26px] text-[24px] font-normal my-2">
-              Berjalan Bersama Menghasilkan Ribuan Karya
+              MGMP Tata Busana, Bersama kita berkarya
             </p>
             <FormButton
               onClick={() => signIn()}

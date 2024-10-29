@@ -19,7 +19,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Ruang Belajar",
-  description: "Tingkatkan Jumlah Literasi siswa bersama kami",
+  description: "Optimalkan Karya Guru",
 };
 
 export default function RootLayout({

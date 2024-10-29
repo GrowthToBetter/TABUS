@@ -39,6 +39,7 @@ model fileWork {
   filename      String
   mimetype      String
   size          Int
+  userClasses   Class
   status        RequestStatus @default(PENDING)
   userId        String
   TaskValidator User[]        @relation("task_validator")

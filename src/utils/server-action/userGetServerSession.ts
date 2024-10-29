@@ -176,10 +176,11 @@ export const updateStatus = async (id: string, data: FormData) => {
     throw new Error((error as Error).message);
   }
 };
-export const updateUploadFileByLink = async (data: FormData) => {
+export const updateUploadFileByLink = async (data: FormData, userData: userFullPayload) => {
   try {
     const name = data.get("name") as string;
     const type = data.get("type") as string;
+    const Classes = data.get("kelas") as Class
     const Genre = data.get("Genre");
     if (!Genre) {
       throw new Error("eror");
@@ -187,12 +188,14 @@ export const updateUploadFileByLink = async (data: FormData) => {
     const size = 0;
     const url = data.get("url") as string;
     const userId = data.get("userId") as string;
+    const fileName=`${userData?.name}_${name}_${userData?.SchoolOrigin}`
     const role = data.get("role") as Role;
     const uploadedFile = await prisma.fileWork.create({
       data: {
-        filename: name,
+        filename: fileName,
         mimetype: type,
         size: size,
+        userClasses: Classes as Class,
         path: url,
         genre: Genre as string,
         userId: userId,
@@ -636,12 +639,15 @@ export const createFile = async (
       await drive.files.delete({ fileId: driveResponse.data.id as string });
       throw new Error("eror");
     }
+    const fileName=`${user?.name}_${file.name}_${user?.SchoolOrigin}`
+    const classes= data.get("kelas") as Class;
     const create = await prisma.fileWork.create({
       data: {
-        filename: file.name,
+        filename: fileName,
         mimetype: file.type,
         size: file.size,
         genre: genre as string,
+        userClasses:classes as Class,
         path: driveResponse.data.webViewLink || "",
         userId: user.id,
         status: "PENDING",

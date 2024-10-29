@@ -51,7 +51,6 @@ export default function ModalUser({
       ? Object.values(Role).filter(
           (x) =>
             x !== "DELETE" &&
-            x !== "SUPERADMIN" &&
             x !== "GURU" &&
             x !== "VALIDATOR"
         )
