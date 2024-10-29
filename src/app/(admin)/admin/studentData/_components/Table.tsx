@@ -83,6 +83,12 @@ export default function Table({ studentData, userData }: { studentData: Prisma.U
       setSchoolData(dataFile);
     }
   }, [data]);
+  if(!userData){
+    return <>Loading...</>
+  }
+  if(!studentData){
+    return <>Loading...</>
+  }
 
   if (loader) return <div>Loading</div>;
   return (

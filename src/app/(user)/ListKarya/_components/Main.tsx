@@ -103,6 +103,17 @@ export default function Main({
       throw new Error((error as Error).message);
     }
   };
+  if(!ListData) {
+    return (<> Loading...</>)}
+  if(!genre) {
+    return (<> Loading...</>)
+  }
+  if(!currentUser) {
+    return (<> Loading...</>)
+  }
+  if(!session) {
+    return (<> Loading...</>)}
+
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
       <div className="block md:hidden mb-4">

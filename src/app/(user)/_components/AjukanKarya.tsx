@@ -106,7 +106,11 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
-
+  if(!userData) {
+    return (<> Loading...</>)}
+  if(!genre) {
+    return (<> Loading...</>)
+  }
   return (
     <div className="pt-44">
       <>

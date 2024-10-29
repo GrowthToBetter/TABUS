@@ -141,6 +141,12 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
+  if(!userData){
+    return <>Loading...</>
+  }
+  if(!file){
+    return <>Loading...</>
+  }
   return (
     <div className="min-h-screen-minus-10">
       <>

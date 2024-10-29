@@ -33,6 +33,12 @@ export default function Home({ userData }: { userData: userFullPayload }) {
   }, [data]);
   const router = useRouter();
   const filteredFiles = files.filter((file) => file.status === "VERIFIED");
+  if(!filteredFiles) {
+    return <>Loading...</>
+  }
+  if(!userData) {
+    return <>Loading...</>
+  }
   return (
     <div className="">
       <div className="bg-Primary min-w-max p-10 flex flex-col justify-center items-center relative">

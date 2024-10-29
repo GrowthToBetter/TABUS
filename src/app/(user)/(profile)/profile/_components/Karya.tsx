@@ -40,6 +40,12 @@ export default function UploadPage({
     }));
   };
   const filteredFile = file.filter((file) => file.userId == userData?.id);
+  if(!userData){
+    return <>Loading...</>
+  }
+  if(!file){
+    return <>Loading...</>
+  }
   return (
     <div className="min-h-screen-minus-10 ">
       <>

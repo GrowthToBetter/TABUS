@@ -48,6 +48,12 @@ export default function Table({ dataGenre, userData }: { userData: userFullPaylo
   useEffect(() => {
     setLoader(false);
   }, []);
+  if(!userData){
+    return <>Loading...</>
+  }
+  if(!dataGenre){
+    return <>Loading...</>
+  }
 
   if (loader) return <div>Loading</div>;
   return (
