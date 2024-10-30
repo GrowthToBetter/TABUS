@@ -108,9 +108,6 @@ export default function Main({
   if(!genre) {
     return (<> Loading...</>)
   }
-  if(!currentUser) {
-    return (<> Loading...</>)
-  }
   if(!session) {
     return (<> Loading...</>)}
 
@@ -160,6 +157,8 @@ export default function Main({
 
       <div className="lg:w-5/12">
         <div className="grid grid-cols-1 gap-4">
+          {
+            currentUser && (
           <div className="w-full bg-white rounded-3xl pb-6">
             <Image
               src={currentUser.cover as string}
@@ -188,6 +187,8 @@ export default function Main({
               </p>
             </div>
           </div>
+            )
+          }
           <div className="w-full px-10 bg-white rounded-3xl py-4">
             <div className="py-4 font-Quicksand xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-light text-slate-500">
               Manage your File
