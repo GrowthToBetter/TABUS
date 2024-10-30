@@ -205,6 +205,8 @@ export default function Navbar() {
                         Beranda
                       </Link>
                     </li>
+                    {
+                      session?.user?.email &&(
                     <li>
                       <Link
                         href="/AjukanKarya"
@@ -217,6 +219,9 @@ export default function Navbar() {
                         Ajukan Karya
                       </Link>
                     </li>
+
+                      )
+                    }
                     <li>
                       <Link
                         href="/ListKarya"
@@ -253,6 +258,7 @@ export default function Navbar() {
                   Beranda
                 </Link>
               </li>
+              {session?.user?.email && (
               <li>
                 <Link
                   href="/AjukanKarya"
@@ -265,6 +271,7 @@ export default function Navbar() {
                   Ajukan Karya
                 </Link>
               </li>
+              )}
               <li>
                 <Link
                   href="/ListKarya"
