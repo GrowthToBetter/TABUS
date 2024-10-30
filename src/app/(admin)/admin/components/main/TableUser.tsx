@@ -86,12 +86,6 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
     }
   }, [data]);
   if (loader) return <div>Loading</div>;
-  if(!userData){
-    return <>Loading...</>
-  }
-  if(!dataAdmin){
-    return <>Loading...</>
-  }
   return (
     <>
       <section className="w-full m-[10px] mt-[20px]">
@@ -106,7 +100,7 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
           </div>
         </section>
       </section>
-      {modal && <ModalUser Schools={schoolData as SchoolFullPayload[]} userData={userData} setIsOpenModal={setModal} data={modalData} />}
+      {modal && <ModalUser Schools={schoolData ? schoolData as SchoolFullPayload[]: []} userData={userData} setIsOpenModal={setModal} data={modalData} />}
     </>
   );
 }
