@@ -87,7 +87,7 @@ export default async function AdminPage() {
           </div>
         </section>
       </section>
-      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin ? dataAdmin : [] } />
+      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin ? dataAdmin : [] as userFullPayload[] } />
     </div>
   );
 }

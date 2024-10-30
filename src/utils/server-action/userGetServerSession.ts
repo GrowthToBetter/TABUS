@@ -450,6 +450,7 @@ export const UpdateAdminById = async (
         },
       });
       if (!create) throw new Error("Failed to create admin!");
+      revalidatePath("/api/user");
       revalidatePath("/admin");
       return { status: 200, message: "Create Success!" };
     } else if (id) {
