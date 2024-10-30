@@ -108,8 +108,6 @@ export default function Main({
   if(!genre) {
     return (<> Loading...</>)
   }
-  if(!session) {
-    return (<> Loading...</>)}
 
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
