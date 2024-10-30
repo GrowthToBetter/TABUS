@@ -59,7 +59,15 @@ export default async function AdminPage() {
       desc: "Malang Telkom Vocational School Achievements",
     },
   ];
-  
+  if(!userData) {
+    return <>Loading...</>
+  }
+  if(!dataPaper) {
+    return <>Loading...</>
+  }
+  if(!CardItem) {
+    return <>Loading...</>
+  }
   return (
     <div className="flex flex-col relative">
       <section className="w-full">
