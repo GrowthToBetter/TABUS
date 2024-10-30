@@ -4,7 +4,7 @@ import { findAllUsers, findFiles } from "@/utils/user.query";
 import prisma from "@/lib/prisma";
 import TableUser from "./components/main/TableUser";
 import { nextGetServerSession } from "@/lib/authOption";
-import { userFullPayload } from "@/utils/relationsip";
+import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
 
 interface cardProps {
   title: string;
@@ -29,6 +29,7 @@ export default async function AdminPage() {
   const dataUser = userData?.role === "SUPERADMIN" ? await findAllUsers({AND: [ { NOT: { role: "DELETE" } }, { NOT: { role: "SUPERADMIN" } }]}) : await findAllUsers({
     AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "VALIDATOR" } }, {NOT:{role: "SUPERADMIN"}}],
   });
+  const schoolData: SchoolFullPayload[]= await prisma.schoolOrigin.findMany();
   const dataPaper = await findFiles({
     AND: [{ NOT: { status: "DENIED" } }, { NOT: { status: "PENDING" } }],
   });
@@ -59,6 +60,7 @@ export default async function AdminPage() {
       desc: "Malang Telkom Vocational School Achievements",
     },
   ];
+
   if(!userData) {
     return <>Loading...</>
   }
@@ -87,7 +89,7 @@ export default async function AdminPage() {
           </div>
         </section>
       </section>
-      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin ? dataAdmin : [] as userFullPayload[] } />
+      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin ? dataAdmin : [] as userFullPayload[] } schoolData={schoolData} />
     </div>
   );
 }

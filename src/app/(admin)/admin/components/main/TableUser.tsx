@@ -11,7 +11,7 @@ import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
 
-export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.UserGetPayload<{ include: { userAuth: true } }>[]; userData: userFullPayload }) {
+export default function TableUser({ dataAdmin, userData, schoolData }: { dataAdmin: Prisma.UserGetPayload<{ include: { userAuth: true } }>[]; userData: userFullPayload; schoolData: SchoolFullPayload[]}) {
   const [modal, setModal] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   const [modalData, setModalData] = useState<Prisma.UserGetPayload<{}> | null>(null);
@@ -70,21 +70,6 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
   useEffect(() => {
     setLoader(false);
   }, []);
-
-  const[schoolData, setSchoolData] = useState<SchoolFullPayload[]>();
-  const { data, error } = useSWR(
-    `/api/getSchool`,
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
-  );
-  useEffect(() => {
-    if (data) {
-      const { dataFile } = data;
-      setSchoolData(dataFile);
-    }
-  }, [data]);
   if (loader) return <div>Loading</div>;
   return (
     <>
@@ -96,7 +81,7 @@ export default function TableUser({ dataAdmin, userData }: { dataAdmin: Prisma.U
           </div>
           <div className="w-full border-b-2 border-black "></div>
           <div className="mt-6">
-            <DataTable data={dataAdmin} columns={columns} />
+            <DataTable data={dataAdmin.length > 0 ? dataAdmin : []} columns={columns} />
           </div>
         </section>
       </section>
