@@ -18,6 +18,7 @@ import useSWR from "swr";
 import Card from "../../components/utils/card";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import ModalProfile from "@/app/components/utils/Modal";
 
 export default function Home({ userData }: { userData: userFullPayload }) {
   const { data: session, status } = useSession();
@@ -25,6 +26,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
   const { data, error } = useSWR(`/api/getFiles`, fetcher, {
     refreshInterval: 1000,
   });
+  const [openProfiles, setOpenProfiles] = useState<boolean>(false);
   useEffect(() => {
     if (data) {
       const { dataFile } = data;
@@ -32,12 +34,12 @@ export default function Home({ userData }: { userData: userFullPayload }) {
     }
   }, [data]);
   const router = useRouter();
-  const filteredFiles = files.filter((file) => file.status === "VERIFIED");
-  if(!filteredFiles) {
-    return <>Loading...</>
+  const filteredFiles = files.filter((file) => file.status === "VERIFIED").slice(0,8);
+  if (!filteredFiles) {
+    return <>Loading...</>;
   }
-  if(!userData) {
-    return <>Loading...</>
+  if (!userData) {
+    return <>Loading...</>;
   }
   return (
     <div className="">
@@ -78,7 +80,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
           </ul>
         </div>
       </div>
-      <div className=" grid lg:grid-cols-2 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
+      <div className=" grid lg:grid-cols-4 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
         {filteredFiles.map((user, i) => (
           <div
             key={i}
@@ -108,19 +110,52 @@ export default function Home({ userData }: { userData: userFullPayload }) {
                 </p>
               </div>
 
-              <div className="mt-6 justify-start">
+              <div className="mt-6 justify-between flex">
                 <LinkButton
                   variant="white"
-                  href={`${user.path}`}
+                  href={`/ListKarya/user/profile/${user.userId}`}
                   className="bg-transparent border rounded-full"
                 >
                   Profil
                 </LinkButton>
+                <div className="flex gap-x-4">
+                  <FormButton
+                    variant="base"
+                    onClick={() => {
+                      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                      user.mimetype.includes("msword") ||
+                      user.mimetype.includes(
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      )
+                        ? setOpenProfiles(true)
+                        : router.push(user.path);
+                    }}
+                    className=" text-blue-500 hover:underline"
+                  >
+                    Baca
+                  </FormButton>
+                </div>
               </div>
+              {openProfiles && (
+                <ModalProfile
+                  title={user.filename}
+                  onClose={() => setOpenProfiles(false)}
+                  className="h-screen"
+                >
+                  <iframe
+                    className="w-full h-full"
+                    src={`${user.path}&output=embed`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
+                    allowFullScreen
+                  ></iframe>
+                </ModalProfile>
+              )}
             </div>
           </div>
         ))}
       </div>
+        <LinkButton href={"/ListKarya"} className="m-5" variant="base">Lihat Lebih Banyak </LinkButton>
       <div>
         <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
           <div className="max-w-max">

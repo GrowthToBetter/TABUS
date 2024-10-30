@@ -356,7 +356,7 @@ export default function Main({
                           }}
                           className=" text-blue-500 hover:underline"
                         >
-                          Lihat File
+                          Baca
                         </FormButton>
                         <FormButton
                           variant="base"
