@@ -34,7 +34,10 @@ export default function Home({ userData }: { userData: userFullPayload }) {
     }
   }, [data]);
   const router = useRouter();
-  const filteredFiles = files.filter((file) => file.status === "VERIFIED").slice(0,8);
+  const filteredFiles = files
+  .filter((file) => file.status === "VERIFIED")
+  .sort((a, b) => b.views - a.views)
+  .slice(0, 15);
   if (!filteredFiles) {
     return <>Loading...</>;
   }
@@ -80,7 +83,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
           </ul>
         </div>
       </div>
-      <div className=" grid lg:grid-cols-4 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
+      <div className=" grid lg:grid-cols-3 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
         {filteredFiles.map((user, i) => (
           <div
             key={i}
