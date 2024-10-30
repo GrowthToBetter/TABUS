@@ -14,7 +14,7 @@ export default function UploadPage({
   userData,
   file,
 }: {
-  userData: userFullPayload;
+  userData: userFullPayload | null;
   file: FileFullPayload[];
 }) {
   const { data: session, status } = useSession();
@@ -40,18 +40,13 @@ export default function UploadPage({
     }));
   };
   const filteredFile = file.filter((file) => file.userId == userData?.id);
-  if(!userData){
-    return <>Loading...</>
-  }
-  if(!file){
-    return <>Loading...</>
-  }
   return (
     <div className="min-h-screen-minus-10 ">
+      {userData ? 
       <>
         {
         userData?.role === "VALIDATOR" ||
-        userData?.role === "ADMIN" ? (
+        userData?.role === "ADMIN" || userData.role==="SUPERADMIN" ? (
           <>
             <ul className="flex pt-32 justify-evenly font-semibold   ">
               <li>
@@ -190,7 +185,8 @@ export default function UploadPage({
             </div>
           </div>
         </div>
-      </>
+      </> :<> Loading ....</>
+    }
     </div>
   );
 }
