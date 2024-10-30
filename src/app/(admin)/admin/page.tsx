@@ -46,30 +46,23 @@ export default async function AdminPage() {
   const CardItem: cardProps[] = [
     {
       title: "Number of user",
-      data: dataUser.length,
+      data: dataUser ? dataUser.length : 0,
       desc: "user who allocated they paper",
     },
     {
       title: "Number of Mentor",
-      data: dataPaper.length,
+      data: dataPaper ? dataPaper.length : 0,
       desc: "All Verified Paper",
     },
     {
       title: "Number of works submitted",
-      data: dataSubmited.length,
+      data: dataSubmited ? dataSubmited.length : 0,
       desc: "Malang Telkom Vocational School Achievements",
     },
   ];
-
-  if(!userData) {
-    return <>Loading...</>
-  }
-  if(!dataPaper) {
-    return <>Loading...</>
-  }
-  if(!CardItem) {
-    return <>Loading...</>
-  }
+  if (!userData || !dataAdmin || !schoolData || !session) {
+    return <div>Loading...</div>; 
+}
   return (
     <div className="flex flex-col relative">
       <section className="w-full">
@@ -89,7 +82,7 @@ export default async function AdminPage() {
           </div>
         </section>
       </section>
-      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin ? dataAdmin : [] as userFullPayload[] } schoolData={schoolData} />
+      <TableUser userData={userData as userFullPayload} dataAdmin={dataAdmin } schoolData={schoolData} />
     </div>
   );
 }

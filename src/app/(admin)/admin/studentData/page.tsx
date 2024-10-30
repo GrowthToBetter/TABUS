@@ -27,7 +27,7 @@ export default async function studentData() {
   return (
     <div className="flex flex-col">
       <AdminHeaders data="Student Data" />
-      <Table userData={userData as userFullPayload} studentData={studentData ? studentData : []} />
+      <Table userData={userData as userFullPayload} studentData={studentData} />
     </div>
   );
 }

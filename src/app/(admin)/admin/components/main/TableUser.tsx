@@ -71,6 +71,7 @@ export default function TableUser({ dataAdmin, userData, schoolData }: { dataAdm
     setLoader(false);
   }, []);
   if (loader) return <div>Loading</div>;
+  if(!dataAdmin) return <div>Loading</div>;
   return (
     <>
       <section className="w-full m-[10px] mt-[20px]">
@@ -81,7 +82,7 @@ export default function TableUser({ dataAdmin, userData, schoolData }: { dataAdm
           </div>
           <div className="w-full border-b-2 border-black "></div>
           <div className="mt-6">
-            <DataTable data={dataAdmin.length > 0 ? dataAdmin : []} columns={columns} />
+            <DataTable data={dataAdmin} columns={columns} />
           </div>
         </section>
       </section>
