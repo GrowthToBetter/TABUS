@@ -156,7 +156,7 @@ export default function Main({
       <div className="lg:w-5/12">
         <div className="grid grid-cols-1 gap-4">
           {
-            currentUser && (
+            currentUser && session && (
           <div className="w-full bg-white rounded-3xl pb-6">
             <Image
               src={currentUser.cover as string}
