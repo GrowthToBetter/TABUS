@@ -33,9 +33,6 @@ export default function Page(props: { params: { slug: string } }) {
   const handleModal = () => {
     setModal(!modal);
   };
-  if(userData){
-    if(status==="authenticated" && !userData.title && userData.role==="GURU") return router.push("/pilihRole");
-  }
   return (
     <div className="bg-slate-100 p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">

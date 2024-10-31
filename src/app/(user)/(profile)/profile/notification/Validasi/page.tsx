@@ -41,8 +41,5 @@ export default async function page() {
       },
     });
   }
-  if (userData) {
-    if (session?.user?.email && !userData.title && userData.role==="GURU") return redirect("/pilihRole");
-  }
   return <Home userData={userData ? userData as userFullPayload : null} file={file? file : []} />;
 }
