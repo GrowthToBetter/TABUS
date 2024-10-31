@@ -3,9 +3,9 @@
 "use client";
 
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, use, useEffect, useState } from "react";
 import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import ModalProfile from "@/app/components/utils/Modal";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
@@ -80,7 +80,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    userData?.role === "VALIDATOR"
+    session?.user?.role === "VALIDATOR"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
@@ -92,7 +92,9 @@ export default function UploadPage({
     try {
       const loading = toast.loading("Loading...");
       const formData = new FormData(e.target as HTMLFormElement);
-
+      if(!session?.user){
+        signIn();
+      }
       for (const field of taskFields) {
         formData.set("Task", field.task);
         const user = {
@@ -321,7 +323,7 @@ export default function UploadPage({
                                     handleSubmit(
                                       e,
                                       file.id,
-                                      userData?.id as string
+                                      session?.user?.id as string
                                     )
                                   }
                                 >
