@@ -87,3 +87,7 @@ export default async function AdminPage() {
     </div>
   );
 }
+
+
+
+export const maxDuration = 60;
