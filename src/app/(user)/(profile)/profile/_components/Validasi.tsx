@@ -3,7 +3,7 @@
 "use client";
 
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
-import { FormEvent, useEffect, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import ModalProfile from "@/app/components/utils/Modal";
@@ -21,14 +21,11 @@ import {
 } from "@/utils/server-action/userGetServerSession";
 import toast from "react-hot-toast";
 import { TextField } from "@/app/components/utils/Form";
-
-export default function UploadPage({
-  userData,
-  session,
-}: {
-  userData: userFullPayload;
-  session: any;
-}) {
+interface UploadPageProps {
+  userData: userFullPayload | null;
+  file: FileFullPayload[];
+}
+export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) =>  {
   const [taskFields, setTaskFields] = useState([{ task: "", details: [""] }]);
   const [openProfiles, setOpenProfiles] = useState<{ [key: string]: boolean }>(
     {}
@@ -36,24 +33,8 @@ export default function UploadPage({
   const [openFile, setOpenFile] = useState<{ [key: string]: boolean }>({});
   const [modal, setModal] = useState(false);
   const pathName = usePathname();
-  const [file, setFile] = useState<FileFullPayload[]>([]);
   const router = useRouter();
 
-  const { data, error } = useSWR(
-    `/api/getFiles${
-      userData?.role === "GURU" ? `?fileId=${userData?.id}` : ""
-    }`,
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
-  );
-  useEffect(() => {
-    if (data) {
-      const { dataFile } = data;
-      setFile(dataFile);
-    }
-  }, [data]);
   const handleProf = (id: string) => {
     setOpenProfiles((prev) => ({
       ...prev,
@@ -95,8 +76,8 @@ export default function UploadPage({
   };
   const filteredFile =
     userData?.role === "GURU"
-      ? file.filter((file) => file.userRole === "GURU")
-      : file.filter((file) => file.userRole !== "DELETE");
+      ? file.filter((f) => f.userRole === "GURU")
+      : file.filter((f) => f.userRole !== "DELETE");
   const handleSubmit = async (
     e: FormEvent<HTMLFormElement>,
     idFile: string,
@@ -155,11 +136,9 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
-  console.log(userData);
-  console.log(filteredFile);
-  console.log(session);
-  console.log(file);
-  console.log(taskFields);
+  if(!userData?.id){
+    return <>Loading...</>
+  }
   return (
     <div className="min-h-screen-minus-10">
       <>
@@ -414,3 +393,6 @@ export default function UploadPage({
     </div>
   );
 }
+
+
+export const maxDuration = 60;
