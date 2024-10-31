@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
@@ -7,8 +8,6 @@ import { ChangeEvent, FormEvent, use, useEffect, useState } from "react";
 import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 import { signIn, signOut, useSession } from "next-auth/react";
 import ModalProfile from "@/app/components/utils/Modal";
-import useSWR from "swr";
-import { fetcher } from "@/utils/server-action/Fetcher";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,14 +20,14 @@ import {
 } from "@/utils/server-action/userGetServerSession";
 import toast from "react-hot-toast";
 import { TextField } from "@/app/components/utils/Form";
-import { updateFile } from "@/utils/user.query";
 
 export default function UploadPage({
   file,
+  Session
 }: {
   file: FileFullPayload[];
+  Session: any;
 }) {
-  const { data: session, status } = useSession();
   const [taskFields, setTaskFields] = useState([{ task: "", details: [""] }]);
   const [openProfiles, setOpenProfiles] = useState<{ [key: string]: boolean }>(
     {}
@@ -78,7 +77,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    session?.user?.role === "VALIDATOR"
+    Session?.user?.role === "VALIDATOR"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
@@ -90,10 +89,6 @@ export default function UploadPage({
     try {
       const loading = toast.loading("Loading...");
       const formData = new FormData(e.target as HTMLFormElement);
-      if (!session?.user) {
-        signIn();
-      }
-      console.log(session);
       for (const field of taskFields) {
         formData.set("Task", field.task);
         const user = {
@@ -142,16 +137,16 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
-  console.log(session);
+  console.log(Session);
   console.log(filteredFile);
   console.log(taskFields);
   console.log(file);
   return (
     <div className="min-h-screen-minus-10">
       <>
-        {session?.user?.role === "VALIDATOR" ||
-        session?.user?.role === "ADMIN" ||
-        session?.user?.role === "SUPERADMIN" ? (
+        { Session && (Session.user?.role === "VALIDATOR" ||
+        Session.user?.role === "ADMIN" ||
+        Session.user?.role === "SUPERADMIN") ? (
           <>
             <ul className="flex pt-32 justify-evenly font-semibold   ">
               <li>
@@ -323,7 +318,7 @@ export default function UploadPage({
                                     handleSubmit(
                                       e,
                                       file.id,
-                                      session?.user?.id as string
+                                      Session?.user?.id as string
                                     )
                                   }
                                 >

@@ -30,7 +30,7 @@ export default async function page() {
       },
     });
   }
-  return <Home file={file? file : []} />;
+  return <Home file={file? file : []} Session={session}/>;
 }
 
 export const maxDuration = 60;
