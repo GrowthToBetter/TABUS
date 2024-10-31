@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import TableUser from "./components/main/TableUser";
 import { nextGetServerSession } from "@/lib/authOption";
 import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
+import { signIn } from "next-auth/react";
 
 interface cardProps {
   title: string;
@@ -60,6 +61,9 @@ export default async function AdminPage() {
       desc: "Malang Telkom Vocational School Achievements",
     },
   ];
+  if(!session){
+    signIn();
+  }
   return (
     <div className="flex flex-col relative">
       <section className="w-full">

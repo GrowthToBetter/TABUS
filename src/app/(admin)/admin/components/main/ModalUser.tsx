@@ -7,7 +7,8 @@ import ModalProfile from "@/app/components/utils/Modal";
 import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
 import { UpdateAdminById } from "@/utils/server-action/userGetServerSession";
 import { Prisma, Role } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -64,6 +65,9 @@ export default function ModalUser({
         filteredSchool.push(School.name);
       }
     }
+  }
+  if(!session){
+    signIn();
   }
   return (
     <ModalProfile title="Data Admin" onClose={() => setIsOpenModal(false)}>
