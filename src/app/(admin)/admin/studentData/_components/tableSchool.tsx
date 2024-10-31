@@ -48,12 +48,6 @@ export default function Table({ dataSchool, userData }: { userData: userFullPayl
   useEffect(() => {
     setLoader(false);
   }, []);
-  if(!userData){
-    return <>Loading...</>
-  }
-  if(!dataSchool){
-    return <>Loading...</>
-  }
   if (loader) return <div>Loading</div>;
   return (
     <>
