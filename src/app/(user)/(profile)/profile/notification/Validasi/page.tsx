@@ -9,17 +9,6 @@ import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 
 export default async function page() {
   const session = await nextGetServerSession();
-  const userData = await prisma.user.findFirst({
-    where: {
-      id: session?.user?.id,
-    },
-    include: {
-      userAuth: true,
-      File: { include: { TaskValidator: true } },
-      taskValidator: { include: { user: true } },
-      comment: { include: { file: true } },
-    },
-  });
   let file:FileFullPayload[]=[];
   if (session?.user?.role==="GURU") {
      file = await prisma.fileWork.findMany({
@@ -41,7 +30,7 @@ export default async function page() {
       },
     });
   }
-  return <Home userData={userData as userFullPayload} file={file? file : []} />;
+  return <Home file={file? file : []} />;
 }
 
 export const maxDuration = 60;

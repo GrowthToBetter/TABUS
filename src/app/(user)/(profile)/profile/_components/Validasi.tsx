@@ -24,10 +24,8 @@ import { TextField } from "@/app/components/utils/Form";
 import { updateFile } from "@/utils/user.query";
 
 export default function UploadPage({
-  userData,
   file,
 }: {
-  userData: userFullPayload;
   file: FileFullPayload[];
 }) {
   const { data: session, status } = useSession();
@@ -39,7 +37,6 @@ export default function UploadPage({
   const [modal, setModal] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  
 
   const handleProf = (id: string) => {
     setOpenProfiles((prev) => ({
@@ -81,7 +78,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    userData?.role === "VALIDATOR"
+    session?.user?.role === "VALIDATOR"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
@@ -93,9 +90,10 @@ export default function UploadPage({
     try {
       const loading = toast.loading("Loading...");
       const formData = new FormData(e.target as HTMLFormElement);
-      if(!session?.user){
+      if (!session?.user) {
         signIn();
       }
+      console.log(session);
       for (const field of taskFields) {
         formData.set("Task", field.task);
         const user = {
@@ -134,7 +132,7 @@ export default function UploadPage({
   const addView = async (file: FileFullPayload) => {
     const loading = toast.loading("Loading...");
     try {
-      const update = await addViews(file.id, file.views+1);
+      const update = await addViews(file.id, file.views + 1);
       if (!update) {
         toast.error("Gagal Menambahkan Like");
       }
@@ -144,12 +142,16 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
+  console.log(session);
+  console.log(filteredFile);
+  console.log(taskFields);
+  console.log(file);
   return (
     <div className="min-h-screen-minus-10">
       <>
-        {
-        session?.user?.role === "VALIDATOR" ||
-        session?.user?.role === "ADMIN" || session?.user?.role==="SUPERADMIN" ? (
+        {session?.user?.role === "VALIDATOR" ||
+        session?.user?.role === "ADMIN" ||
+        session?.user?.role === "SUPERADMIN" ? (
           <>
             <ul className="flex pt-32 justify-evenly font-semibold   ">
               <li>
@@ -177,9 +179,7 @@ export default function UploadPage({
         ) : (
           <></>
         )}
-        <div
-          className={`flex justify-center items-center min-w-max h-fit `}
-        >
+        <div className={`flex justify-center items-center min-w-max h-fit `}>
           <div className="shadow-inner container w-[1300px] border-2 border-gray-300 rounded-lg h-fit">
             <div className="shadow-inner container p-10 w-[1300px] border-2 border-gray-300 rounded-lg ">
               <h1 className="font-bold text-[40px] w-[400px]">
@@ -216,7 +216,7 @@ export default function UploadPage({
                         delete
                       </FormButton>
                       <button
-                        onClick={() =>{
+                        onClick={() => {
                           file.mimetype.includes("msword") ||
                           file.mimetype.includes(
                             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -224,8 +224,7 @@ export default function UploadPage({
                             ? handlefile(file.id)
                             : router.push(file.path);
                           addView(file);
-                        }
-                        }
+                        }}
                         className="ml-4 text-blue-500 hover:underline"
                       >
                         Lihat File
