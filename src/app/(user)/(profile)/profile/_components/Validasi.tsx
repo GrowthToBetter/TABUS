@@ -75,7 +75,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) =>  {
     }
   };
   const filteredFile =
-    userData?.role === "GURU"
+    (userData?.role ?? "") === "GURU"
       ? file.filter((f) => f.userRole === "GURU")
       : file.filter((f) => f.userRole !== "DELETE");
   const handleSubmit = async (

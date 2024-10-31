@@ -8,17 +8,27 @@ import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+
 export default async function page() {
   const session = await nextGetServerSession();
+  
+  if (!session?.user?.id) return redirect("/signin");
+
   const userData = await prisma.user.findFirst({
-    where: { id: session?.user?.id },
+    where: { id: session.user.id },
     include: { userAuth: true, File: { include: { TaskValidator: true } } },
   });
-  let file:FileFullPayload[]=[];
-  if (session?.user?.role==="SISWA") {
-     file = await prisma.fileWork.findMany({
+
+  if (!userData) {
+    return <div>Loading user data...</div>;
+  }
+
+  let file: FileFullPayload[] = [];
+  
+  if (session.user.role === "SISWA") {
+    file = await prisma.fileWork.findMany({
       where: {
-        userId: session?.user?.id,
+        userId: session.user.id,
       },
       include: {
         user: { include: { userAuth: true } },
@@ -26,7 +36,7 @@ export default async function page() {
         comment: { include: { user: true } },
       },
     });
-  } else{
+  } else {
     file = await prisma.fileWork.findMany({
       include: {
         user: { include: { userAuth: true } },
@@ -35,11 +45,6 @@ export default async function page() {
       },
     });
   }
-  if (!session?.user?.id) return redirect("/signin");
-  if (userData || session) {
-    revalidatePath("/profile/notification/Validasi");
-  }
-  return <>
-  {userData && file && (<ValidatePage userData={userData as userFullPayload | null} file={file} />) }
-  </>;
+
+  return <ValidatePage userData={userData as userFullPayload} file={file} />;
 }
