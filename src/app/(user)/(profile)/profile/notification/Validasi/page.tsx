@@ -41,7 +41,7 @@ export default async function page() {
       },
     });
   }
-  return <Home userData={ userData as userFullPayload } file={file? file : []} />;
+  return <Home userData={userData as userFullPayload} file={file? file : []} />;
 }
 
 export const maxDuration = 60;

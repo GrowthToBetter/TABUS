@@ -39,6 +39,7 @@ export default function UploadPage({
   const [modal, setModal] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
+  
 
   const handleProf = (id: string) => {
     setOpenProfiles((prev) => ({
@@ -80,7 +81,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    session?.user?.role === "VALIDATOR"
+    userData?.role === "VALIDATOR"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
