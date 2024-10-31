@@ -43,3 +43,5 @@ export default async function page() {
   }
   return <Home userData={userData ? userData as userFullPayload : null} file={file? file : []} />;
 }
+
+export const maxDuration = 60;
