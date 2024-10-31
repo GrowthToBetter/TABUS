@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
-import { ChangeEvent, FormEvent, use, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ModalProfile from "@/app/components/utils/Modal";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,11 +23,11 @@ import toast from "react-hot-toast";
 import { TextField } from "@/app/components/utils/Form";
 
 export default function UploadPage({
-  file,
-  Session
+  userData,
+  session,
 }: {
-  file: FileFullPayload[];
-  Session: any;
+  userData: userFullPayload;
+  session: any;
 }) {
   const [taskFields, setTaskFields] = useState([{ task: "", details: [""] }]);
   const [openProfiles, setOpenProfiles] = useState<{ [key: string]: boolean }>(
@@ -35,8 +36,24 @@ export default function UploadPage({
   const [openFile, setOpenFile] = useState<{ [key: string]: boolean }>({});
   const [modal, setModal] = useState(false);
   const pathName = usePathname();
+  const [file, setFile] = useState<FileFullPayload[]>([]);
   const router = useRouter();
 
+  const { data, error } = useSWR(
+    `/api/getFiles${
+      userData?.role === "GURU" ? `?fileId=${userData?.id}` : ""
+    }`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
+  useEffect(() => {
+    if (data) {
+      const { dataFile } = data;
+      setFile(dataFile);
+    }
+  }, [data]);
   const handleProf = (id: string) => {
     setOpenProfiles((prev) => ({
       ...prev,
@@ -77,7 +94,7 @@ export default function UploadPage({
     }
   };
   const filteredFile =
-    Session?.user?.role === "VALIDATOR"
+    userData?.role === "GURU"
       ? file.filter((file) => file.userRole === "GURU")
       : file.filter((file) => file.userRole !== "DELETE");
   const handleSubmit = async (
@@ -89,6 +106,7 @@ export default function UploadPage({
     try {
       const loading = toast.loading("Loading...");
       const formData = new FormData(e.target as HTMLFormElement);
+
       for (const field of taskFields) {
         formData.set("Task", field.task);
         const user = {
@@ -137,16 +155,17 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
-  console.log(Session);
+  console.log(userData);
   console.log(filteredFile);
-  console.log(taskFields);
+  console.log(session);
   console.log(file);
+  console.log(taskFields);
   return (
     <div className="min-h-screen-minus-10">
       <>
-        { Session && (Session.user?.role === "VALIDATOR" ||
-        Session.user?.role === "ADMIN" ||
-        Session.user?.role === "SUPERADMIN") ? (
+        {userData?.role === "SUPERADMIN" ||
+        userData?.role === "VALIDATOR" ||
+        userData?.role === "ADMIN" ? (
           <>
             <ul className="flex pt-32 justify-evenly font-semibold   ">
               <li>
@@ -174,7 +193,11 @@ export default function UploadPage({
         ) : (
           <></>
         )}
-        <div className={`flex justify-center items-center min-w-max h-fit `}>
+        <div
+          className={`flex justify-center items-center w-screen h-fit ${
+            userData?.role == "GURU" ? "pt-44" : ""
+          }`}
+        >
           <div className="shadow-inner container w-[1300px] border-2 border-gray-300 rounded-lg h-fit">
             <div className="shadow-inner container p-10 w-[1300px] border-2 border-gray-300 rounded-lg ">
               <h1 className="font-bold text-[40px] w-[400px]">
@@ -183,197 +206,204 @@ export default function UploadPage({
             </div>
             <div className="shadow-inner container p-10 w-[1300px] h-fit">
               {filteredFile && filteredFile.length > 0 ? (
-                <>
-                  {filteredFile.map((file) => (
-                    <div
-                      key={file.id}
-                      className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                    >
-                      <Link href={`${file.path}`}>
-                        {file.filename} <br />
-                        <span
-                          className={`${
-                            file.status === "PENDING"
-                              ? "text-yellow-500"
-                              : file.status === "DENIED"
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                filteredFile.map(
+                  (file) =>
+                    file && (
+                      <div
+                        key={file.id}
+                        className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
+                      >
+                        <Link href={`${file.path}`}>
+                          {file.filename} <br />
+                          <span
+                            className={`${
+                              file.status === "PENDING"
+                                ? "text-yellow-500"
+                                : file.status === "DENIED"
+                                ? "text-red-500"
+                                : "text-green-500"
+                            }`}
+                          >
+                            {file.status}
+                          </span>
+                        </Link>
+                        <FormButton
+                          type="button"
+                          variant="base"
+                          onClick={() => handleRemove(file.id)}
                         >
-                          {file.status}
-                        </span>
-                      </Link>
-                      <FormButton
-                        type="button"
-                        variant="base"
-                        onClick={() => handleRemove(file.id)}
-                      >
-                        delete
-                      </FormButton>
-                      <button
-                        onClick={() => {
-                          file.mimetype.includes("msword") ||
-                          file.mimetype.includes(
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          )
-                            ? handlefile(file.id)
-                            : router.push(file.path);
-                          addView(file);
-                        }}
-                        className="ml-4 text-blue-500 hover:underline"
-                      >
-                        Lihat File
-                      </button>
-                      <>
-                        {openFile[file.id] && (
-                          <ModalProfile
-                            title={file.filename}
-                            onClose={() =>
-                              setOpenFile({
-                                ...openFile,
-                                [file.id]: false,
-                              })
+                          delete
+                        </FormButton>
+                        <button
+                          onClick={() => {
+                            if (
+                              file.mimetype.includes("msword") ||
+                              file.mimetype.includes(
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                              )
+                            ) {
+                              handlefile(file.id);
+                            } else {
+                              router.push(file.path);
                             }
-                            className="h-screen"
-                          >
-                            <iframe
-                              className="w-full h-full"
-                              src={`${file.path}&output=embed`}
-                              frameBorder="9"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              contentEditable
-                              sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                              allowFullScreen
-                            ></iframe>
-                          </ModalProfile>
-                        )}
-                      </>
-                      <div className="relative">
+                            addView(file);
+                          }}
+                          className="ml-4 text-blue-500 hover:underline"
+                        >
+                          Lihat File
+                        </button>
                         <>
-                          <FormButton
-                            type="button"
-                            variant="base"
-                            onClick={() => handleProf(file.id)}
-                            withArrow
-                            className="flex justify-center gap-x-2 py-2 px-4"
-                          >
-                            <Image
-                              src={file.user?.photo_profile as string}
-                              alt="user image"
-                              width={36}
-                              height={36}
-                              className="rounded-full"
-                            />
-                          </FormButton>
+                          {openFile[file.id] && (
+                            <ModalProfile
+                              title={file.filename}
+                              onClose={() =>
+                                setOpenFile({
+                                  ...openFile,
+                                  [file.id]: false,
+                                })
+                              }
+                              className="h-screen"
+                            >
+                              <iframe
+                                className="w-full h-full"
+                                src={`${file.path}&output=embed`}
+                                frameBorder="9"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                contentEditable
+                                sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
+                                allowFullScreen
+                              ></iframe>
+                            </ModalProfile>
+                          )}
                         </>
-                        {openProfiles[file.id] && (
-                          <div className="w-full p-2 max-w-56 bg-Secondary mt-1 border border-slate-300 rounded-lg absolute right-0 top-full z-10">
-                            <div>
-                              <LinkButton
-                                variant="base"
-                                href={`/ListKarya/user/profile/${file.userId}`}
-                                className="w-full"
-                              >
-                                <p className="mx-auto text-sm">Visit</p>
-                              </LinkButton>
-                              <FormButton
-                                variant="base"
-                                onClick={() => {
-                                  handleClick(file.id, "VERIFIED");
-                                }}
-                                className="w-full"
-                              >
-                                <p className="mx-auto text-sm text-black border-t-2 border-Primary">
-                                  Verified
-                                </p>
-                              </FormButton>
-                              <FormButton
-                                variant="base"
-                                onClick={() => {
-                                  handleClick(file.id, "DENIED");
-                                }}
-                                className="w-full"
-                              >
-                                <p className="mx-auto text-sm text-black border-t-2 border-Primary">
-                                  Denied
-                                </p>
-                              </FormButton>
-                              <FormButton
-                                variant="base"
-                                onClick={handleModal}
-                                className="w-full"
-                              >
-                                <p className="mx-auto text-sm text-black border-t-2 border-Primary">
-                                  comment
-                                </p>
-                              </FormButton>
-                            </div>
-                            {modal && (
-                              <ModalProfile
-                                onClose={() => setModal(false)}
-                                title="comment"
-                              >
-                                <form
-                                  onSubmit={(e) =>
-                                    handleSubmit(
-                                      e,
-                                      file.id,
-                                      Session?.user?.id as string
-                                    )
-                                  }
+                        <div className="relative">
+                          <>
+                            <FormButton
+                              type="button"
+                              variant="base"
+                              onClick={() => handleProf(file.id)}
+                              withArrow
+                              className="flex justify-center gap-x-2 py-2 px-4"
+                            >
+                              <Image
+                                src={file.user?.photo_profile as string}
+                                alt="user image"
+                                width={36}
+                                height={36}
+                                className="rounded-full"
+                              />
+                            </FormButton>
+                          </>
+                          {openProfiles[file.id] && (
+                            <div className="w-full p-2 max-w-56 bg-Secondary mt-1 border border-slate-300 rounded-lg absolute right-0 top-full z-10">
+                              <div>
+                                <LinkButton
+                                  variant="base"
+                                  href={`/profile/${file.user?.id}`}
+                                  className="w-full"
                                 >
-                                  {taskFields.map((field, taskIndex) => (
-                                    <div
-                                      key={taskIndex}
-                                      className="w-full mb-4 p-4 bg-white border-2 border-moklet drop-shadow rounded-[12px]"
-                                    >
-                                      <div className="flex items-center justify-between">
-                                        <TextField
-                                          type="input"
-                                          label={`ADD Comment ${taskIndex + 1}`}
-                                          name={`Task-${taskIndex}`}
-                                          value={field.task}
-                                          handleChange={(e) =>
-                                            handleTaskChange(
-                                              taskIndex,
-                                              e.target.value
-                                            )
-                                          }
-                                          className="w-full m-3 text-black"
-                                        />
-                                      </div>
-                                      <div className="flex justify-start">
-                                        <FormButton
-                                          type="button"
-                                          onClick={() => handleAddTaskField()}
-                                          className="rounded-full flex justify-center items-center text-center"
-                                          variant="base"
-                                        >
-                                          +
-                                        </FormButton>
-                                        <FormButton
-                                          type="button"
-                                          onClick={() => handleMinTaskField()}
-                                          className="rounded-full flex justify-center items-center text-center"
-                                          variant="base"
-                                        >
-                                          -
-                                        </FormButton>
-                                      </div>
-                                    </div>
-                                  ))}
-                                  <FormButton type="submit" variant="base">
-                                    Submit
-                                  </FormButton>
-                                </form>
-                              </ModalProfile>
-                            )}
-                          </div>
-                        )}
+                                  <p className="mx-auto text-sm">Visit</p>
+                                </LinkButton>
+                                <FormButton
+                                  variant="base"
+                                  onClick={() => {
+                                    handleClick(file.id, "VERIFIED");
+                                  }}
+                                  className="w-full"
+                                >
+                                  <p className="mx-auto text-sm text-black border-t-2 border-Primary">
+                                    Verified
+                                  </p>
+                                </FormButton>
+                                <FormButton
+                                  variant="base"
+                                  onClick={() => {
+                                    handleClick(file.id, "DENIED");
+                                  }}
+                                  className="w-full"
+                                >
+                                  <p className="mx-auto text-sm text-black border-t-2 border-Primary">
+                                    Denied
+                                  </p>
+                                </FormButton>
+                                <FormButton
+                                  variant="base"
+                                  onClick={handleModal}
+                                  className="w-full"
+                                >
+                                  <p className="mx-auto text-sm text-black border-t-2 border-Primary">
+                                    comment
+                                  </p>
+                                </FormButton>
+                              </div>
+                              {modal && (
+                                <ModalProfile
+                                  onClose={() => setModal(false)}
+                                  title="comment"
+                                >
+                                  <form
+                                    onSubmit={(e) =>
+                                      handleSubmit(
+                                        e,
+                                        file.id,
+                                        userData?.id as string
+                                      )
+                                    }
+                                  >
+                                    {taskFields.map((field, taskIndex) => (
+                                      field && (<div
+                                        key={taskIndex}
+                                        className="w-full mb-4 p-4 bg-white border-2 border-moklet drop-shadow rounded-[12px]"
+                                      >
+                                        <div className="flex items-center justify-between">
+                                          <TextField
+                                            type="input"
+                                            label={`ADD Comment ${
+                                              taskIndex + 1
+                                            }`}
+                                            name={`Task-${taskIndex}`}
+                                            value={field.task}
+                                            handleChange={(e) =>
+                                              handleTaskChange(
+                                                taskIndex,
+                                                e.target.value
+                                              )
+                                            }
+                                            className="w-full m-3 text-black"
+                                          />
+                                        </div>
+                                        <div className="flex justify-start">
+                                          <FormButton
+                                            type="button"
+                                            onClick={() => handleAddTaskField()}
+                                            className="rounded-full flex justify-center items-center text-center"
+                                            variant="base"
+                                          >
+                                            +
+                                          </FormButton>
+                                          <FormButton
+                                            type="button"
+                                            onClick={() => handleMinTaskField()}
+                                            className="rounded-full flex justify-center items-center text-center"
+                                            variant="base"
+                                          >
+                                            -
+                                          </FormButton>
+                                        </div>
+                                      </div>)
+                                    ))}
+                                    <FormButton type="submit" variant="base">
+                                      Submit
+                                    </FormButton>
+                                  </form>
+                                </ModalProfile>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </>
+                    )
+                )
               ) : (
                 <>Belum Ada Karya untuk dilihat ...</>
               )}

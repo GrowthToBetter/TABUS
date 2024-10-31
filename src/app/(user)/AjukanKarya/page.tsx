@@ -19,6 +19,6 @@ export default async function page() {
     },
   });
   const getGenre=await prisma.genre.findMany();
-  if (!session?.user?.email) return redirect("/signin");
+  if (!session?.user?.id) return redirect("/signin");
   return <AjukanKarya userData={userData as userFullPayload} genre={getGenre}/>;
 }

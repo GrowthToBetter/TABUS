@@ -205,6 +205,7 @@ export default function UploadPage({
                     <DropDown
                       label="Genre"
                       options={filteredGenre.map((classes) => ({
+                        key: classes,
                         label: classes,
                         value: classes,
                       }))}
@@ -234,7 +235,7 @@ export default function UploadPage({
                       key={file.id}
                       className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
                     >
-                      <Link href={`${file.path}`}>
+                      <Link href={`${file.path}`} key={file.id}>
                         {file.filename} <br />
                         <span
                           className={`${
@@ -249,6 +250,7 @@ export default function UploadPage({
                         </span>
                       </Link>
                       <button
+                        key={file.id}
                         onClick={() =>
                           file.mimetype.includes("msword") ||
                           file.mimetype.includes(
@@ -262,6 +264,7 @@ export default function UploadPage({
                         Lihat File
                       </button>
                       <FormButton
+                        key={file.id}
                         type="button"
                         variant="base"
                         onClick={() => handleDelete(file.id, file)}
@@ -269,6 +272,7 @@ export default function UploadPage({
                         Delete Paper
                       </FormButton>
                       <FormButton
+                        key={file.id}
                         type="button"
                         variant="base"
                         onClick={() => {

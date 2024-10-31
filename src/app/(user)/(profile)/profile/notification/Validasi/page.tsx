@@ -4,33 +4,21 @@ import React from "react";
 import Home from "../../_components/Validasi";
 import prisma from "@/lib/prisma";
 import { nextGetServerSession } from "@/lib/authOption";
+import { userFullPayload } from "@/utils/relationsip";
 import { redirect } from "next/navigation";
-import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
+import { revalidatePath } from "next/cache";
 
 export default async function page() {
   const session = await nextGetServerSession();
-  let file:FileFullPayload[]=[];
-  if (session?.user?.role==="GURU") {
-     file = await prisma.fileWork.findMany({
-      where: {
-        userId: session?.user?.id,
-      },
-      include: {
-        user: { include: { userAuth: true } },
-        TaskValidator: true,
-        comment: { include: { user: true } },
-      },
-    });
-  } else{
-    file = await prisma.fileWork.findMany({
-      include: {
-        user: { include: { userAuth: true } },
-        TaskValidator: true,
-        comment: { include: { user: true } },
-      },
-    });
+  const userData = await prisma.user.findFirst({
+    where: { id: session?.user?.id },
+    include: { userAuth: true, File: { include: { TaskValidator: true } } },
+  });
+  if (!session?.user?.id) return redirect("/signin");
+  if (userData || session) {
+    revalidatePath("/profile/notification/Validasi");
   }
-  return <Home file={file? file : []} Session={session}/>;
+  return <>
+  {<Home userData={userData as userFullPayload} session={session} /> }
+  </>;
 }
-
-export const maxDuration = 60;

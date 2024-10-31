@@ -14,7 +14,7 @@ export default function UploadPage({
   userData,
   file,
 }: {
-  userData: userFullPayload ;
+  userData: userFullPayload;
   file: FileFullPayload[];
 }) {
   const { data: session, status } = useSession();
@@ -23,9 +23,7 @@ export default function UploadPage({
   );
   const pathName = usePathname();
   const router = useRouter();
-  const [comment, setComment] = useState<{ [key: string]: boolean }>(
-    {}
-  );
+  const [comment, setComment] = useState<{ [key: string]: boolean }>({});
 
   const handleProf = (id: string) => {
     setOpenProfiles((prev) => ({
@@ -42,11 +40,10 @@ export default function UploadPage({
   const filteredFile = file.filter((file) => file.userId == userData?.id);
   return (
     <div className="min-h-screen-minus-10 ">
-
       <>
-        {
-        session?.user?.role === "VALIDATOR" ||
-        session?.user?.role === "ADMIN" || session?.user?.role==="SUPERADMIN" ? (
+        {session?.user?.role === "VALIDATOR" ||
+        session?.user?.role === "ADMIN" ||
+        session?.user?.role === "SUPERADMIN" ? (
           <>
             <ul className="flex pt-32 justify-evenly font-semibold   ">
               <li>
@@ -74,9 +71,7 @@ export default function UploadPage({
         ) : (
           <></>
         )}
-        <div
-          className={`flex justify-center items-center min-w-max h-fit `}
-        >
+        <div className={`flex justify-center items-center min-w-max h-fit `}>
           <div className="shadow-inner container w-[1300px] border-2 border-gray-300 rounded-lg h-fit">
             <div className="shadow-inner container p-10 w-[1300px] border-2 border-gray-300 rounded-lg ">
               <h1 className="font-bold text-[40px] w-[400px]">
@@ -86,98 +81,97 @@ export default function UploadPage({
             <div className="shadow-inner container p-10 w-[1300px] h-fit">
               {filteredFile && filteredFile.length > 0 ? (
                 <>
-                  {filteredFile.map((file) => (
-                    <>
-                    {file.comment.length > 0 && (
-                    <div
-                      key={file.id}
-                      className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                    >
-                      <Link href={`${file.path}`}>
-                        {file.filename} <br />
-                        <span
-                          className={`${
-                            file.status === "PENDING"
-                              ? "text-yellow-500"
-                              : file.status === "DENIED"
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                  {filteredFile.map(
+                    (file) =>
+                      file.comment.length > 0 && (
+                        <div
+                          key={file.id}
+                          className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
                         >
-                          {file.status}
-                        </span>
-                      </Link>
-                      
-                        <>
-                          <FormButton
-                            variant="base"
-                            type="button"
-                            onClick={() => {
-                              handleComment(file.id);
-                            }}
-                          >
-                            {" "}
-                            Comment From Validator
-                          </FormButton>
-                        </>
-                      {comment[file.id] && (
-                        <ModalProfile
-                          onClose={() => {
-                            handleComment(file.id);
-                          }}
-                        >
-                          {file.comment.map((comment) => (
-                            <div
-                              key={file.id}
-                              className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
+                          <Link href={`${file.path}`}>
+                            {file.filename} <br />
+                            <span
+                              className={`${
+                                file.status === "PENDING"
+                                  ? "text-yellow-500"
+                                  : file.status === "DENIED"
+                                  ? "text-red-500"
+                                  : "text-green-500"
+                              }`}
                             >
-                              <p>{comment.Text}</p>
-                              <p>{comment.user?.name}</p>
-                            </div>
-                          ))}
-                        </ModalProfile>
-                      )}
-                      <button
-                        onClick={() =>
-                          file.mimetype.includes("msword") ||
-                          file.mimetype.includes(
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          )
-                            ? handleProf(file.id)
-                            : router.push(file.path)
-                        }
-                        className="ml-4 text-blue-500 hover:underline"
-                      >
-                        Lihat File
-                      </button>
-                      <>
-                        {openProfiles[file.id] && (
-                          <ModalProfile
-                            title={file.filename}
-                            onClose={() =>
-                              setOpenProfiles({
-                                ...openProfiles,
-                                [file.id]: false,
-                              })
+                              {file.status}
+                            </span>
+                          </Link>
+
+                          <>
+                            <FormButton
+                              variant="base"
+                              type="button"
+                              onClick={() => {
+                                handleComment(file.id);
+                              }}
+                            >
+                              {" "}
+                              Comment From Validator
+                            </FormButton>
+                          </>
+                          {comment[file.id] && (
+                            <ModalProfile
+                              onClose={() => {
+                                handleComment(file.id);
+                              }}
+                            >
+                              {file.comment.map((comment) => (
+                                <div
+                                  key={file.id}
+                                  className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
+                                >
+                                  <p>{comment.Text}</p>
+                                  <p>{comment.user?.name}</p>
+                                </div>
+                              ))}
+                            </ModalProfile>
+                          )}
+                          <button
+                            onClick={() =>
+                              file.mimetype.includes("msword") ||
+                              file.mimetype.includes(
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                              )
+                                ? handleProf(file.id)
+                                : router.push(file.path)
                             }
-                            className="h-screen"
+                            className="ml-4 text-blue-500 hover:underline"
                           >
-                            <iframe
-                              className="w-full h-full"
-                              src={`${file.path}&output=embed`}
-                              frameBorder="9"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              contentEditable
-                              sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                              allowFullScreen
-                            ></iframe>
-                          </ModalProfile>
-                        )}
-                      </>
-                    </div>
-                      )}
-                      </>
-                  ))}
+                            Lihat File
+                          </button>
+                          <>
+                            {openProfiles[file.id] && (
+                              <ModalProfile
+                                title={file.filename}
+                                onClose={() =>
+                                  setOpenProfiles({
+                                    ...openProfiles,
+                                    [file.id]: false,
+                                  })
+                                }
+                                className="h-screen"
+                              >
+                                <iframe
+                                  className="w-full h-full"
+                                  src={`${file.path}&output=embed`}
+                                  frameBorder="9"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  contentEditable
+                                  sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
+                                  allowFullScreen
+                                ></iframe>
+                              </ModalProfile>
+                            )}
+                          </>
+                        </div>
+                      )
+                  )}
                 </>
               ) : (
                 <>Belum Ada Karya untuk dilihat ...</>
@@ -185,7 +179,7 @@ export default function UploadPage({
             </div>
           </div>
         </div>
-      </> 
+      </>
     </div>
   );
 }

@@ -112,7 +112,7 @@ export default function Navbar() {
               ) : (
                 <>
                   {status === "loading" ? (
-                    <></>
+                    <>loading...</>
                   ) : (
                     <div className="">
                       <FormButton

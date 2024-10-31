@@ -20,29 +20,16 @@ export default async function page() {
       comment: { include: { file: true } },
     },
   });
-  let file:FileFullPayload[]=[];
-  if (session?.user?.role==="GURU") {
-     file = await prisma.fileWork.findMany({
-      where: {
-        userId: session?.user?.id,
-      },
-      include: {
-        user: { include: { userAuth: true } },
-        TaskValidator: true,
-        comment: { include: { user: true } },
-      },
-    });
-  } else{
-    file = await prisma.fileWork.findMany({
-      include: {
-        user: { include: { userAuth: true } },
-        TaskValidator: true,
-        comment: { include: { user: true } },
-      },
-    });
-  }
-  return <Home userData={userData as userFullPayload} file={file ? file : []} />;
+  const file: FileFullPayload[] = await prisma.fileWork.findMany({
+    where: {
+      userId: session?.user?.id,
+    },
+    include: {
+      user: { include: { userAuth: true } },
+      TaskValidator: true,
+      comment: { include: { user: true } },
+    },
+  });
+
+  return <Home userData={userData as userFullPayload} file={file} />;
 }
-
-
-export const maxDuration = 60;
