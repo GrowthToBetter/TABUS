@@ -12,7 +12,7 @@ import { fetcher } from "@/utils/server-action/Fetcher";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { RequestStatus } from "@prisma/client";
+import { RequestStatus, Role } from "@prisma/client";
 import {
   addViews,
   commentFile,
@@ -22,7 +22,7 @@ import {
 import toast from "react-hot-toast";
 import { TextField } from "@/app/components/utils/Form";
 interface UploadPageProps {
-  userData: userFullPayload | null;
+  userData: userFullPayload ;
   file: FileFullPayload[];
 }
 export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) =>  {
@@ -75,7 +75,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) =>  {
     }
   };
   const filteredFile =
-    (userData?.role ?? "") === "GURU"
+    (userData?.role as Role ?? "") === "GURU"
       ? file.filter((f) => f.userRole === "GURU")
       : file.filter((f) => f.userRole !== "DELETE");
   const handleSubmit = async (
