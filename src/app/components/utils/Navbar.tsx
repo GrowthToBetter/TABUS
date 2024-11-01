@@ -132,21 +132,21 @@ export default function Navbar() {
                       </FormButton>
                       {prof && (
                         <div className="w-full p-2 max-w-56 bg-Secondary mt-1 border border-slate-300 rounded-lg fixed right-12 top-24 inline-block">
-                          <LinkButton
+                          <FormButton
                             variant="base"
-                            href="/profile"
-                            className="w-full"
+                            onClick={() =>
+                              router.push("/profile")
+                            }
+                            className="w-full mx-auto text-sm text-center "
                           >
-                            <p className="mx-auto text-sm">Profile</p>
-                          </LinkButton>
+                            Profile
+                          </FormButton>
                           <FormButton
                             onClick={() => signOut({ callbackUrl: "/signin" })}
                             variant="base"
-                            className="w-full"
+                            className="w-full mx-auto text-sm text-black border-t-2 border-Primary"
                           >
-                            <p className="mx-auto text-sm text-black border-t-2 border-Primary">
                               Sign Out
-                            </p>
                           </FormButton>
                           <FormButton
                             variant="base"

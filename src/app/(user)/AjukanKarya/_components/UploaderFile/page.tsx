@@ -3,6 +3,7 @@ import { GenreFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import toast from "react-hot-toast";
 
 interface UploadedFile {
   id: string;
@@ -49,6 +50,7 @@ export default function FileUploader({
       try {
         const uploadResults = await Promise.all(
           acceptedFiles.map(async (file) => {
+            const loading = toast.loading("Uploading...");
             const formData = new FormData();
             formData.append("file", file);
             formData.append("Genre", selectedGenre[userData.id] as string);
@@ -67,6 +69,7 @@ export default function FileUploader({
                 errorData.error || `Failed to upload ${file.name}`
               );
             }
+            toast.success("File uploaded successfully", { id: loading });
             return await response.json();
           })
         );

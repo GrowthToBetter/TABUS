@@ -230,12 +230,12 @@ export default function UploadPage({
             <div className="shadow-inner container p-10 w-[1300px] h-fit">
               {file ? (
                 <>
-                  {file.map((file) => (
+                  {file.map((file, i) => (
                     <div
-                      key={file.id}
+                      key={i}
                       className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
                     >
-                      <Link href={`${file.path}`} key={file.id}>
+                      <Link href={`${file.path}`} key={i}>
                         {file.filename} <br />
                         <span
                           className={`${
@@ -250,7 +250,7 @@ export default function UploadPage({
                         </span>
                       </Link>
                       <button
-                        key={file.id}
+                        key={i+1}
                         onClick={() =>
                           file.mimetype.includes("msword") ||
                           file.mimetype.includes(
@@ -264,7 +264,7 @@ export default function UploadPage({
                         Lihat File
                       </button>
                       <FormButton
-                        key={file.id}
+                        key={i+2}
                         type="button"
                         variant="base"
                         onClick={() => handleDelete(file.id, file)}
@@ -272,7 +272,7 @@ export default function UploadPage({
                         Delete Paper
                       </FormButton>
                       <FormButton
-                        key={file.id}
+                        key={i+3}
                         type="button"
                         variant="base"
                         onClick={() => {
