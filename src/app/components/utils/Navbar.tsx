@@ -89,6 +89,7 @@ export default function Navbar() {
                   <li>12. Karya yang telah diverifikasi bisa dilihat pada List Karya yang diakses dari halaman Home atau Navbar Karya</li>
                   <li>13. Karya Yang berupa word atau docs dapat dibaca On Page, sedangkan pdf atau Image akan ter- Redirect ke lokasi file disimpan</li>
                 </ul>
+                <div className="h-32 w-full invisible"></div>
               </div>
             </ModalProfile>
           )}
