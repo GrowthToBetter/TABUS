@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import Gambar from "@/../public/img/HomeImage.png";
+import Gambar from "@/../public/img/gambar provesi (2).png";
 import Image from "next/image";
 import { FormButton, LinkButton } from "../../components/utils/Button";
 import { Archivo_Black } from "next/font/google";
@@ -9,7 +9,7 @@ const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 import IconSubject from "../../components/Icons/icon-Subject";
 import Img from "../../components/Icons/Img";
 import Link from "next/link";
-import gambar1 from "@/../public/img/Gambar.png";
+import gambar1 from "@/../public/img/WhatsApp Image 2024-11-07 at 21.23.29_7c1b692d.jpg";
 import { useEffect, useState } from "react";
 import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 import { signIn, useSession } from "next-auth/react";
