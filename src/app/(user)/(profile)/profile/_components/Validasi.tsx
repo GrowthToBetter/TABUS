@@ -30,11 +30,11 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
   const [openProfiles, setOpenProfiles] = useState<{ [key: string]: boolean }>(
     {}
   );
-  const [searchInput, setSearchInput] = useState<string>("");
   const [openFile, setOpenFile] = useState<{ [key: string]: boolean }>({});
   const [modal, setModal] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
+  const [searchInput, setSearchInput] = useState<string>("");
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };

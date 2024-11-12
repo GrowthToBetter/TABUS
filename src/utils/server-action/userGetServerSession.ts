@@ -176,11 +176,14 @@ export const updateStatus = async (id: string, data: FormData) => {
     throw new Error((error as Error).message);
   }
 };
-export const updateUploadFileByLink = async (data: FormData, userData: userFullPayload) => {
+export const updateUploadFileByLink = async (
+  data: FormData,
+  userData: userFullPayload
+) => {
   try {
     const name = data.get("name") as string;
     const type = data.get("type") as string;
-    const Classes = data.get("kelas") as Class
+    const Classes = data.get("kelas") as Class;
     const Genre = data.get("Genre");
     if (!Genre) {
       throw new Error("eror");
@@ -188,7 +191,7 @@ export const updateUploadFileByLink = async (data: FormData, userData: userFullP
     const size = 0;
     const url = data.get("url") as string;
     const userId = data.get("userId") as string;
-    const fileName=`${userData?.name}_${name}_${userData?.SchoolOrigin}`
+    const fileName = `${userData?.name}_${name}_${userData?.SchoolOrigin}`;
     const role = data.get("role") as Role;
     const uploadedFile = await prisma.fileWork.create({
       data: {
@@ -276,7 +279,7 @@ export const UpdateGenreByIdInAdmin = async (
       return { status: 401, message: "Auth Required" };
     }
     if (userData?.role !== "SUPERADMIN") {
-      if(userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -319,6 +322,52 @@ export const UpdateGenreByIdInAdmin = async (
     throw new Error((error as Error).message);
   }
 };
+export const UpdateFileByIdInAdmin = async (
+  userData: userFullPayload,
+  id: string,
+  data: FormData
+) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user) {
+      return { status: 401, message: "Auth Required" };
+    }
+    if (userData?.role !== "SUPERADMIN") {
+      if (userData?.role !== "ADMIN") {
+        return { status: 401, message: "Unauthorize" };
+      }
+    }
+
+    const status = data.get("status") as RequestStatus;
+    const filename = data.get("name") as string;
+    const Genre = data.get("role") as string;
+    if (id) {
+      const findUser = await prisma.fileWork.findFirst({
+        where: { id },
+        include: { user: true },
+      });
+      if (findUser) {
+        const update = await prisma.fileWork.update({
+          where: { id: id ?? findUser?.id },
+          data: {
+            filename: filename ?? findUser?.filename,
+            status: status ?? findUser?.status,
+            genre: Genre ?? (findUser?.genre as string),
+          },
+        });
+        console.log(update);
+        if (!update) throw new Error("Failed to update admin!");
+        revalidatePath("/admin");
+        return { status: 200, message: "Update Success!" };
+      } else throw new Error("User not found!");
+    }
+    revalidatePath("/admin");
+    return { status: 200, message: "Update Success!" };
+  } catch (error) {
+    console.error("Error update user:", error);
+    throw new Error((error as Error).message);
+  }
+};
 export const UpdateUserByIdInAdmin = async (
   userData: userFullPayload,
   id: string,
@@ -330,7 +379,7 @@ export const UpdateUserByIdInAdmin = async (
       return { status: 401, message: "Auth Required" };
     }
     if (userData?.role !== "SUPERADMIN") {
-      if(userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -412,7 +461,7 @@ export const UpdateAdminById = async (
       return { status: 401, message: "Auth Required" };
     }
     if (userData?.role !== "SUPERADMIN") {
-      if(userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -498,7 +547,7 @@ export const DeleteGenre = async (id: string, userData: userFullPayload) => {
       return { status: 401, message: "Auth Required" };
     }
     if (userData?.role !== "SUPERADMIN") {
-      if(userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -524,7 +573,7 @@ export const DeleteSchool = async (id: string, userData: userFullPayload) => {
       return { status: 401, message: "Auth Required" };
     }
     if (userData?.role !== "SUPERADMIN") {
-      if(userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -550,7 +599,7 @@ export const DeleteUser = async (id: string) => {
       return { status: 401, message: "Auth Required" };
     }
     if (session?.user?.role !== "SUPERADMIN") {
-      if(session?.user?.role !== "ADMIN") {
+      if (session?.user?.role !== "ADMIN") {
         return { status: 401, message: "Unauthorize" };
       }
     }
@@ -640,15 +689,15 @@ export const createFile = async (
       await drive.files.delete({ fileId: driveResponse.data.id as string });
       throw new Error("eror");
     }
-    const fileName=`${user?.name}_${file.name}_${user?.SchoolOrigin}`
-    const classes= data.get("kelas") as Class;
+    const fileName = `${user?.name}_${file.name}_${user?.SchoolOrigin}`;
+    const classes = data.get("kelas") as Class;
     const create = await prisma.fileWork.create({
       data: {
         filename: fileName,
         mimetype: file.type,
         size: file.size,
         genre: genre as string,
-        userClasses:classes as Class,
+        userClasses: classes as Class,
         path: driveResponse.data.webViewLink || "",
         userId: user.id,
         status: "PENDING",

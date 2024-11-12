@@ -51,6 +51,11 @@ export default function Sidebar() {
       href: "/admin/dataCategory",
       icon: <TeamDataIcon />,
     },
+    {
+      title: "Data Files",
+      href: "/admin/Files",
+      icon: <TeamDataIcon />,
+    },
   ];
   const handleClick = () => {
     setActive(!active);
