@@ -26,7 +26,6 @@ export default function Home({ userData }: { userData: userFullPayload }) {
   const { data, error } = useSWR(`/api/getFiles`, fetcher, {
     refreshInterval: 1000,
   });
-  const [openProfiles, setOpenProfiles] = useState<boolean>(false);
   useEffect(() => {
     if (data) {
       const { dataFile } = data;
@@ -34,6 +33,18 @@ export default function Home({ userData }: { userData: userFullPayload }) {
     }
   }, [data]);
   const router = useRouter();
+  const [openProfiles, setOpenProfiles] = useState<{
+    [key: string]: { isOpen: boolean; link: string };
+  }>({});
+  const handleProf = (id: string, link: string) => {
+    setOpenProfiles((prev) => ({
+      ...prev,
+      [id]: {
+        isOpen: !prev[id]?.isOpen,
+        link: prev[id]?.link || link,
+      },
+    }));
+  };
   const filteredFiles = files
   .filter((file) => file.status === "VERIFIED")
   .sort((a, b) => b.views - a.views)
@@ -125,13 +136,11 @@ export default function Home({ userData }: { userData: userFullPayload }) {
                   <FormButton
                     variant="base"
                     onClick={() => {
-                      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                      user.mimetype.includes("msword") ||
-                      user.mimetype.includes(
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                      )
-                        ? setOpenProfiles(true)
-                        : router.push(user.path);
+                      if(user.path.includes("drive")){
+                        handleProf(user.id, user.permisionId as string)
+                      } else {
+                        router.push(user.path);
+                      }
                     }}
                     className=" text-blue-500 hover:underline"
                   >
@@ -139,15 +148,17 @@ export default function Home({ userData }: { userData: userFullPayload }) {
                   </FormButton>
                 </div>
               </div>
-              {openProfiles && (
+              {openProfiles[user.id]?.isOpen && (
                 <ModalProfile
                   title={user.filename}
-                  onClose={() => setOpenProfiles(false)}
+                  onClose={() => handleProf(user.id, "")}
                   className="h-screen"
                 >
                   <iframe
                     className="w-full h-full"
-                    src={`${user.path}&output=embed`}
+                    src={`https://drive.google.com/file/d/${
+                      openProfiles[user.id]?.link
+                    }/preview`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
                     allowFullScreen
