@@ -33,8 +33,7 @@ export default function Navbar() {
           <div className="w-fit h-fit flex-col justify-center items-center space-x-72"></div>
           <Link
             href="#"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
+            className="flex items-center space-x-3 rtl:space-x-reverse">
             <div>
               <h1 className="-tracking-tight text-2xl text-white font-bold">
                 Ruang Belajar
@@ -49,9 +48,8 @@ export default function Navbar() {
               onClose={() => {
                 setTutorial(false);
               }}
-              title="Panduan"
-            >
-              <div>
+              title="Panduan">
+              <div className="flex justify-center flex-col items-center">
                 <ul>
                   <li>1. Daftar Melalui Admin sekolah masing masing</li>
                   <li>
@@ -98,6 +96,13 @@ export default function Navbar() {
                     disimpan
                   </li>
                 </ul>
+                <video
+                  className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+                  controls
+                  preload="metadata">
+                  <source src="/video/tutorial.mp4" type="video/mp4" />
+                  Video Tutorial
+                </video>
                 <div className="h-32 w-full invisible"></div>
               </div>
             </ModalProfile>
@@ -107,39 +112,36 @@ export default function Navbar() {
               variant="base"
               onClick={() => {
                 setTutorial(true);
-              }}
-            >
+              }}>
               Panduan
             </FormButton>
             <div>
               {status === "unauthenticated" ? (
                 <button
                   onClick={() => signIn()}
-                  className="focus:outline-none text-black bg-Primariy hover:bg-slate-100 focus:ring focus:ring-slate-100 font-medium rounded-full border border-slate-300 text-sm px-5 py-2.5 me-2 mb-2"
-                >
+                  className="focus:outline-none text-black bg-Primariy hover:bg-slate-100 focus:ring focus:ring-slate-100 font-medium rounded-full border border-slate-300 text-sm px-5 py-2.5 me-2 mb-2">
                   Sign In
                 </button>
               ) : (
                 <>
                   {status === "loading" ? (
-                      <div className="flex gap-x-3 items-center">
-                        <svg
-                          aria-hidden="true"
-                          className="inline w-5 h-5 animate-spin text-blue-900 fill-white"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill"
-                          />
-                        </svg>
-                      </div>
+                    <div className="flex gap-x-3 items-center">
+                      <svg
+                        aria-hidden="true"
+                        className="inline w-5 h-5 animate-spin text-blue-900 fill-white"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentFill"
+                        />
+                      </svg>
+                    </div>
                   ) : (
                     <div className="">
                       <FormButton
@@ -147,8 +149,7 @@ export default function Navbar() {
                         variant="base"
                         onClick={handleProf}
                         withArrow
-                        className="flex justify-center gap-x-2 py-2 px-4 "
-                      >
+                        className="flex justify-center gap-x-2 py-2 px-4 ">
                         <Image
                           src={session?.user?.image as string}
                           alt="user image"
@@ -162,15 +163,13 @@ export default function Navbar() {
                           <FormButton
                             variant="base"
                             onClick={() => router.push("/profile")}
-                            className="w-full mx-auto text-sm text-center "
-                          >
+                            className="w-full mx-auto text-sm text-center ">
                             Profile
                           </FormButton>
                           <FormButton
                             onClick={() => signOut({ callbackUrl: "/signin" })}
                             variant="base"
-                            className="w-full mx-auto text-sm text-black border-t-2 border-Primary"
-                          >
+                            className="w-full mx-auto text-sm text-black border-t-2 border-Primary">
                             Sign Out
                           </FormButton>
                           <FormButton
@@ -178,8 +177,7 @@ export default function Navbar() {
                             className="w-full"
                             onClick={() =>
                               router.push("/profile/notification/Karya")
-                            }
-                          >
+                            }>
                             Notification
                           </FormButton>
                         </div>
@@ -195,16 +193,14 @@ export default function Navbar() {
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-Secondary focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
               aria-controls="navbar-sticky"
               aria-expanded="false"
-              onClick={handleClick}
-            >
+              onClick={handleClick}>
               <span className="sr-only">Open main menu</span>
               <svg
                 className="w-5 h-5"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 17 14"
-              >
+                viewBox="0 0 17 14">
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
@@ -225,8 +221,7 @@ export default function Navbar() {
                           pathName === "/"
                             ? "text-black border-2 border-Secondary"
                             : "text-white"
-                        } rounded-md hover:text-blue-600 hover:border-2 p-2 hover:border-Secondary`}
-                      >
+                        } rounded-md hover:text-blue-600 hover:border-2 p-2 hover:border-Secondary`}>
                         Beranda
                       </Link>
                     </li>
@@ -238,8 +233,7 @@ export default function Navbar() {
                             pathName === "/AjukanKarya"
                               ? "text-black border-2 border-Secondary"
                               : "text-white"
-                          } rounded-md hover:text-blue-600 hover:border-2 p-2 `}
-                        >
+                          } rounded-md hover:text-blue-600 hover:border-2 p-2 `}>
                           Ajukan Karya
                         </Link>
                       </li>
@@ -251,8 +245,7 @@ export default function Navbar() {
                           pathName === "/ListKarya"
                             ? "text-black border-2 border-Secondary"
                             : "text-white"
-                        } rounded-md hover:text-blue-600 hover:border-2 p-2 `}
-                      >
+                        } rounded-md hover:text-blue-600 hover:border-2 p-2 `}>
                         List Karya
                       </Link>
                     </li>
@@ -265,8 +258,7 @@ export default function Navbar() {
           </div>
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-            id="navbar-sticky"
-          >
+            id="navbar-sticky">
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
                 <Link
@@ -275,8 +267,7 @@ export default function Navbar() {
                     pathName === "/"
                       ? "text-black border-2 bg-white border-Primary"
                       : "text-white"
-                  } rounded-md  hover:text-black  hover:bg-white duration-200 hover:border-2 p-2 `}
-                >
+                  } rounded-md  hover:text-black  hover:bg-white duration-200 hover:border-2 p-2 `}>
                   Beranda
                 </Link>
               </li>
@@ -288,8 +279,7 @@ export default function Navbar() {
                       pathName === "/AjukanKarya"
                         ? "text-black border-2 bg-white border-Primary"
                         : "text-white"
-                    } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}
-                  >
+                    } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}>
                     Ajukan Karya
                   </Link>
                 </li>
@@ -301,8 +291,7 @@ export default function Navbar() {
                     pathName === "/ListKarya"
                       ? "text-black border-2 bg-white border-Primary"
                       : "text-white"
-                  } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}
-                >
+                  } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}>
                   List Karya
                 </Link>
               </li>
