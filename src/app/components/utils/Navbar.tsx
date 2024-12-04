@@ -96,13 +96,17 @@ export default function Navbar() {
                     disimpan
                   </li>
                 </ul>
-                <video
-                  className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
-                  controls
-                  preload="metadata">
-                  <source src="/video/tutorial.mp4" type="video/mp4" />
-                  Video Tutorial
-                </video>
+
+                {session?.user?.role === "ADMIN" ||
+                  (session?.user?.role === "SUPERADMIN" && (
+                    <video
+                      className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+                      controls
+                      preload="metadata">
+                      <source src="/video/tutorial.mp4" type="video/mp4" />
+                      Video Tutorial
+                    </video>
+                  ))}
                 <div className="h-32 w-full invisible"></div>
               </div>
             </ModalProfile>
