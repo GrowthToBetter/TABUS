@@ -20,15 +20,20 @@ export const NAV_ITEMS = [
   },
   {
     label: "Panduan",
-    child:[
+    child: [
       {
         label: "Siswa",
+        roleRequired: ["ALL"],
       },
       {
-        label: "Guru"
+        label: "Guru",
+        authRequired: true,
+        roleRequired: ["GURU", "VALIDATOR"],
       },
       {
         label: "Admin",
+        authRequired: true,
+        roleRequired: ["ADMIN", "SUPERADMIN"],
       },
     ],
   },
@@ -76,7 +81,7 @@ export default function Navbar() {
               </h1>
             </div>
           </Link>
-          {tutorial === "Siswa" && (
+          {tutorial === "Guru" && (
             <ModalProfile
               onClose={() => {
                 setTutorial(null);
@@ -133,13 +138,16 @@ export default function Navbar() {
               </div>
             </ModalProfile>
           )}
-          {
-            tutorial === "Guru" && (
-              <ModalProfile title="Panduan Guru" onClose={() => setTutorial(null)}>
-                <IFrameViewer url={'/video/tutorial.mp4'} onClose={() => setTutorial(null)}/>
-              </ModalProfile>
-            )
-          }
+          {tutorial === "Admin" && (
+            <ModalProfile
+              title="Panduan Guru"
+              onClose={() => setTutorial(null)}>
+              <IFrameViewer
+                url={"/video/tutorial.mp4"}
+                onClose={() => setTutorial(null)}
+              />
+            </ModalProfile>
+          )}
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-sticky">
@@ -158,18 +166,27 @@ export default function Navbar() {
                       <DropdownMenu.Content
                         className="bg-white border border-gray-200 rounded-md p-2 shadow-lg"
                         sideOffset={5}>
-                        {item.child.map((childItem, childIndex) => (
-                          <DropdownMenu.Item key={childIndex} asChild>
-                            <Button
-                              onClick={() => {
-                                setTutorial(childItem.label);
-                              }}
-                              className={`${"text-blue-500 border-2 bg-white border-Primary"
-                              } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 block`}>
-                              {childItem.label}
-                            </Button>
-                          </DropdownMenu.Item>
-                        ))}
+                        {item.child
+                          .filter(
+                            (item) =>
+                              !item.authRequired ||
+                              item.roleRequired?.includes("ALL") ||
+                              (session?.user &&
+                                item.roleRequired?.includes(
+                                  session.user.role
+                                ))
+                          )
+                          .map((childItem, childIndex) => (
+                            <DropdownMenu.Item key={childIndex} asChild>
+                              <Button
+                                onClick={() => {
+                                  setTutorial(childItem.label);
+                                }}
+                                className={`${"text-blue-500 border-2 bg-white border-Primary"} rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 block`}>
+                                {childItem.label}
+                              </Button>
+                            </DropdownMenu.Item>
+                          ))}
                       </DropdownMenu.Content>
                     </DropdownMenu.Root>
                   ) : (
