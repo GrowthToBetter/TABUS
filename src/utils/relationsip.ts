@@ -8,7 +8,7 @@ export type userFullPayload = Prisma.UserGetPayload<{
   include: {userAuth: true, File: {include: {TaskValidator: true}}, taskValidator:{include:{user:true}}, comment:{include:{file:true}}};
 }>;
 export type FileFullPayload = Prisma.fileWorkGetPayload<{
-  include: {user: {include: {userAuth: true}}, TaskValidator: true, comment:{include:{user:true}}};
+  include: {user: {include: {userAuth: true}}, TaskValidator: true, comment:{include:{user:true}}, suggest:{include:{user:true}}};
 }>;
 export type GenreFullPayload = Prisma.GenreGetPayload<{select:{Genre: true, id: true}}>;
 export type SchoolFullPayload = Prisma.SchoolOriginGetPayload<{select:{name: true, id: true}}>;

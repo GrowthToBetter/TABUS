@@ -162,8 +162,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                   href={"/profile/notification/Karya"}
                   className={`flex m-10 p-5 rounded-md hover:border-2 hover:border-[#F5F8FA] ${
                     pathName === "/notification/Karya" ? "bg-[#F5F8FA]" : ""
-                  }`}
-                >
+                  }`}>
                   Karya Yang Diajukan
                 </Link>
               </li>
@@ -172,8 +171,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                   href={"/profile/notification/Validasi"}
                   className={`flex m-10 p-5 rounded-md hover:border-2 hover:border-[#F5F8FA] ${
                     pathName === "/notification/Validasi" ? "bg-[#F5F8FA]" : ""
-                  }`}
-                >
+                  }`}>
                   Validasi Karya
                 </Link>
               </li>
@@ -185,8 +183,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
         <div
           className={`flex justify-center items-center w-screen h-fit ${
             userData?.role == "GURU" ? "pt-44" : ""
-          }`}
-        >
+          }`}>
           <div className="shadow-inner container w-[1300px] border-2 border-gray-300 rounded-lg h-fit">
             <div className="shadow-inner container p-10 w-[1300px] border-2 border-gray-300 rounded-lg ">
               <h1 className="font-bold text-[40px] w-[400px]">
@@ -197,8 +194,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
               <div className="block md:hidden mb-4">
                 <label
                   htmlFor="default-search"
-                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
+                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
                   Search
                 </label>
                 <div className="relative">
@@ -208,8 +204,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      viewBox="0 0 20 20"
-                    >
+                      viewBox="0 0 20 20">
                       <path
                         stroke="currentColor"
                         strokeLinecap="round"
@@ -229,54 +224,50 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                   />
                   <button
                     type="submit"
-                    className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full"
-                  >
+                    className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
                     Search
                   </button>
                 </div>
               </div>
             </section>
-              <div className="md:block hidden m-5">
-                <label
-                  htmlFor="default-search"
-                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
-                  Search
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ml-1 ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
-                    placeholder="Search Name File"
-                    value={searchInput}
-                    onChange={handleSearchInput}
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="absolute end-0 bottom-0 focus:outline-none text-black hover:text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full"
-                  >
-                    Search
-                  </button>
+            <div className="md:block hidden m-5">
+              <label
+                htmlFor="default-search"
+                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+                Search
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 flex items-center ml-1 ps-3 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20">
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
                 </div>
+                <input
+                  type="search"
+                  className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
+                  placeholder="Search Name File"
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="absolute end-0 bottom-0 focus:outline-none text-black hover:text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
+                  Search
+                </button>
               </div>
+            </div>
             <div className="shadow-inner container p-10 w-[1300px] h-fit">
               {finalFilteredFile && finalFilteredFile.length > 0 ? (
                 finalFilteredFile.map(
@@ -284,8 +275,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                     file && (
                       <div
                         key={file.id}
-                        className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                      >
+                        className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4">
                         <Link href={`${file.path}`} className="w-1/3">
                           {file.filename} <br />
                           <span
@@ -295,16 +285,14 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                 : file.status === "DENIED"
                                 ? "text-red-500"
                                 : "text-green-500"
-                            }`}
-                          >
+                            }`}>
                             {file.status}
                           </span>
                         </Link>
                         <FormButton
                           type="button"
                           variant="base"
-                          onClick={() => handleRemove(file.id)}
-                        >
+                          onClick={() => handleRemove(file.id)}>
                           delete
                         </FormButton>
                         <button
@@ -321,8 +309,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                             }
                             addView(file);
                           }}
-                          className="ml-4 text-blue-500 hover:underline"
-                        >
+                          className="ml-4 text-blue-500 hover:underline">
                           Lihat File
                         </button>
                         <>
@@ -335,8 +322,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                   [file.id]: false,
                                 })
                               }
-                              className="h-screen"
-                            >
+                              className="h-screen">
                               <iframe
                                 className="w-full h-full"
                                 src={`${file.path}&output=embed`}
@@ -344,8 +330,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 contentEditable
                                 sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                                allowFullScreen
-                              ></iframe>
+                                allowFullScreen></iframe>
                             </ModalProfile>
                           )}
                         </>
@@ -356,8 +341,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                               variant="base"
                               onClick={() => handleProf(file.id)}
                               withArrow
-                              className="flex justify-center gap-x-2 py-2 px-4"
-                            >
+                              className="flex justify-center gap-x-2 py-2 px-4">
                               <Image
                                 src={
                                   (file.user?.photo_profile as string) ??
@@ -376,8 +360,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                 <LinkButton
                                   variant="base"
                                   href={`/profile/${file.user?.id}`}
-                                  className="w-full"
-                                >
+                                  className="w-full">
                                   <p className="mx-auto text-sm">Visit</p>
                                 </LinkButton>
                                 <FormButton
@@ -385,8 +368,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                   onClick={() => {
                                     handleClick(file.id, "VERIFIED");
                                   }}
-                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary"
-                                >
+                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary">
                                   Verified
                                 </FormButton>
                                 <FormButton
@@ -394,23 +376,20 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                   onClick={() => {
                                     handleClick(file.id, "DENIED");
                                   }}
-                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary"
-                                >
+                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary">
                                   Denied
                                 </FormButton>
                                 <FormButton
                                   variant="base"
                                   onClick={handleModal}
-                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary"
-                                >
+                                  className="w-full mx-auto text-sm text-black border-t-2 border-Primary">
                                   comment
                                 </FormButton>
                               </div>
                               {modal && (
                                 <ModalProfile
                                   onClose={() => setModal(false)}
-                                  title="comment"
-                                >
+                                  title="comment">
                                   <form
                                     onSubmit={(e) =>
                                       handleSubmit(
@@ -418,15 +397,13 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                         file.id,
                                         userData?.id as string
                                       )
-                                    }
-                                  >
+                                    }>
                                     {taskFields.map(
                                       (field, taskIndex) =>
                                         field && (
                                           <div
                                             key={taskIndex}
-                                            className="w-full mb-4 p-4 bg-white border-2 border-moklet drop-shadow rounded-[12px]"
-                                          >
+                                            className="w-full mb-4 p-4 bg-white border-2 border-moklet drop-shadow rounded-[12px]">
                                             <div className="flex items-center justify-between">
                                               <TextField
                                                 type="input"
@@ -451,8 +428,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                                   handleAddTaskField()
                                                 }
                                                 className="rounded-full flex justify-center items-center text-center"
-                                                variant="base"
-                                              >
+                                                variant="base">
                                                 +
                                               </FormButton>
                                               <FormButton
@@ -461,8 +437,7 @@ export const ValidatePage: FC<UploadPageProps> = ({ userData, file }) => {
                                                   handleMinTaskField()
                                                 }
                                                 className="rounded-full flex justify-center items-center text-center"
-                                                variant="base"
-                                              >
+                                                variant="base">
                                                 -
                                               </FormButton>
                                             </div>

@@ -51,8 +51,7 @@ export default function UploadPage({
                   href={"/profile/notification/Karya"}
                   className={`flex m-10 p-5 rounded-md hover:border-2 hover:border-[#F5F8FA] ${
                     pathName === "/notification/Karya" ? "bg-[#F5F8FA]" : ""
-                  }`}
-                >
+                  }`}>
                   Karya Yang Diajukan
                 </Link>
               </li>
@@ -61,8 +60,7 @@ export default function UploadPage({
                   href={"/profile/notification/Validasi"}
                   className={`flex m-10 p-5 rounded-md hover:border-2 hover:border-[#F5F8FA] ${
                     pathName === "/notification/Validasi" ? "bg-[#F5F8FA]" : ""
-                  }`}
-                >
+                  }`}>
                   Validasi Karya
                 </Link>
               </li>
@@ -86,8 +84,7 @@ export default function UploadPage({
                       file.comment.length > 0 && (
                         <div
                           key={file.id}
-                          className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                        >
+                          className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4">
                           <Link href={`${file.path}`}>
                             {file.filename} <br />
                             <span
@@ -97,8 +94,7 @@ export default function UploadPage({
                                   : file.status === "DENIED"
                                   ? "text-red-500"
                                   : "text-green-500"
-                              }`}
-                            >
+                              }`}>
                               {file.status}
                             </span>
                           </Link>
@@ -109,8 +105,7 @@ export default function UploadPage({
                               type="button"
                               onClick={() => {
                                 handleComment(file.id);
-                              }}
-                            >
+                              }}>
                               {" "}
                               Comment From Validator
                             </FormButton>
@@ -119,13 +114,11 @@ export default function UploadPage({
                             <ModalProfile
                               onClose={() => {
                                 handleComment(file.id);
-                              }}
-                            >
+                              }}>
                               {file.comment.map((comment) => (
                                 <div
                                   key={file.id}
-                                  className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                                >
+                                  className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4">
                                   <p>{comment.Text}</p>
                                   <p>{comment.user?.name}</p>
                                 </div>
@@ -141,8 +134,7 @@ export default function UploadPage({
                                 ? handleProf(file.id)
                                 : router.push(file.path)
                             }
-                            className="ml-4 text-blue-500 hover:underline"
-                          >
+                            className="ml-4 text-blue-500 hover:underline">
                             Lihat File
                           </button>
                           <>
@@ -155,8 +147,7 @@ export default function UploadPage({
                                     [file.id]: false,
                                   })
                                 }
-                                className="h-screen"
-                              >
+                                className="h-screen">
                                 <iframe
                                   className="w-full h-full"
                                   src={`${file.path}&output=embed`}
@@ -164,8 +155,7 @@ export default function UploadPage({
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   contentEditable
                                   sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                                  allowFullScreen
-                                ></iframe>
+                                  allowFullScreen></iframe>
                               </ModalProfile>
                             )}
                           </>

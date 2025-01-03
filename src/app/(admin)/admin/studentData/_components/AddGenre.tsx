@@ -1,10 +1,15 @@
 "use client";
 import { FormButton } from "@/app/components/utils/Button";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { GenreFullPayload, userFullPayload } from "@/utils/relationsip";
 import ModalGenre from "./ModalGenre";
 
-export default function AddGenre({ userData}:{dataGenre:GenreFullPayload[]; userData:userFullPayload}) {
+export default function AddGenre({
+  userData,
+}: {
+  dataGenre: GenreFullPayload[];
+  userData: userFullPayload;
+}) {
   const [modal, setModal] = useState(false);
   return (
     <>

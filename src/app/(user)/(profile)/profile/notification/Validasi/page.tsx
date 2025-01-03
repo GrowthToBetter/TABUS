@@ -23,7 +23,7 @@ export default async function page() {
     return <div>Loading user data...</div>;
   }
 
-  let file: FileFullPayload[] = [];
+  let file = [];
   
   if (session.user.role === "SISWA") {
     file = await prisma.fileWork.findMany({
@@ -46,5 +46,5 @@ export default async function page() {
     });
   }
 
-  return <ValidatePage userData={userData as userFullPayload} file={file} />;
+  return <ValidatePage userData={userData as userFullPayload} file={file as FileFullPayload[]} />;
 }

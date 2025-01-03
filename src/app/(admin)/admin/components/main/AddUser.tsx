@@ -7,16 +7,12 @@ import { SchoolFullPayload, userFullPayload } from "@/utils/relationsip";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
 
-export default function AddUser({userData}:{userData:userFullPayload}) {
+export default function AddUser({ userData }: { userData: userFullPayload }) {
   const [modal, setModal] = useState(false);
-  const[schoolData, setSchoolData] = useState<SchoolFullPayload[]>();
-  const { data, error } = useSWR(
-    `/api/getSchool`,
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
-  );
+  const [schoolData, setSchoolData] = useState<SchoolFullPayload[]>();
+  const { data, error } = useSWR(`/api/getSchool`, fetcher, {
+    refreshInterval: 1000,
+  });
   useEffect(() => {
     if (data) {
       const { dataFile } = data;
@@ -28,7 +24,13 @@ export default function AddUser({userData}:{userData:userFullPayload}) {
       <FormButton type="button" variant="base" onClick={() => setModal(true)}>
         Add User
       </FormButton>
-      {modal && <ModalUser Schools={schoolData as SchoolFullPayload[]} userData={userData} setIsOpenModal={setModal} />}
+      {modal && (
+        <ModalUser
+          Schools={schoolData as SchoolFullPayload[]}
+          userData={userData}
+          setIsOpenModal={setModal}
+        />
+      )}
     </>
   );
 }

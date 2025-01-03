@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
@@ -52,20 +53,24 @@ model fileWork {
   views         Int           @default(0)
   userRole      Role          @default(GURU)
   createdAt     DateTime      @default(now())
+  suggest       comment[]     @relation("sugest_file")
   comment       comment[]     @relation("comment_file")
 }
 
-model SchoolOrigin{
-  id      String     @id @default(uuid()) @map("school_id") @db.Char(36)
-  name    String
+model SchoolOrigin {
+  id   String @id @default(uuid()) @map("school_id") @db.Char(36)
+  name String
 }
 
 model comment {
-  id     String     @id @default(uuid()) @map("comment_id") @db.Char(36)
-  Text   String?
-  userId String?
-  user   User?      @relation("comment", fields: [userId], references: [id])
-  file   fileWork[] @relation("comment_file")
+  id           String    @id @default(uuid()) @map("comment_id") @db.Char(36)
+  Text         String?
+  userId       String?
+  fileId       String?
+  user         User?     @relation("comment", fields: [userId], references: [id])
+  file         fileWork? @relation("comment_file", fields: [fileId], references: [id])
+  fileSugestId String?
+  fileSugest   fileWork? @relation("sugest_file", fields: [fileSugestId], references: [id])
 }
 
 model Genre {

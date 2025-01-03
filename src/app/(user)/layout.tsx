@@ -5,6 +5,7 @@ import AuthProviders from "@/lib/AuthProvider";
 import Navbar from "../components/utils/Navbar";
 import ProgressBarProvider from "@/lib/ProgressBar";
 import { Toaster } from "react-hot-toast";
+import { PageContainer } from "../components/layout/PageContainer";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -35,8 +36,8 @@ export default function RootLayout({
         <AuthProviders>
           <ProgressBarProvider>
             <Navbar />
-            {children}
-            <Toaster/>
+            <PageContainer>{children}</PageContainer>
+            <Toaster />
           </ProgressBarProvider>
         </AuthProviders>
       </body>

@@ -106,10 +106,11 @@ export default function UploadPage({
       throw new Error((error as Error).message);
     }
   };
-  if(!userData) {
-    return (<> Loading...</>)}
-  if(!genre) {
-    return (<> Loading...</>)
+  if (!userData) {
+    return <> Loading...</>;
+  }
+  if (!genre) {
+    return <> Loading...</>;
   }
   return (
     <div className="pt-44">
@@ -128,23 +129,20 @@ export default function UploadPage({
               <FormButton
                 type="button"
                 onClick={() => setModal(true)}
-                variant="base"
-              >
+                variant="base">
                 Here !
               </FormButton>
               <FormButton
                 type="button"
                 onClick={() => setOpenUploadByLink(true)}
-                variant="base"
-              >
+                variant="base">
                 Upload By Link
               </FormButton>
               {modal && (
                 <ModalProfile
                   onClose={() => {
                     setModal(false);
-                  }}
-                >
+                  }}>
                   <FileUploader userData={userData} genre={genre} />
                 </ModalProfile>
               )}
@@ -152,16 +150,14 @@ export default function UploadPage({
                 <ModalProfile
                   onClose={() => {
                     setOpenUploadByLink(false);
-                  }}
-                >
+                  }}>
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
                       const formdata = new FormData(e.currentTarget);
 
                       handleSubmitLink(formdata);
-                    }}
-                  >
+                    }}>
                     <TextField
                       type="text"
                       name="name"
@@ -202,23 +198,23 @@ export default function UploadPage({
                         value="XII"
                         label="Kelas XII"
                       />
-                    <DropDown
-                      label="Genre"
-                      options={filteredGenre.map((classes) => ({
-                        key: classes,
-                        label: classes,
-                        value: classes,
-                      }))}
-                      className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
-                      name="Genre"
-                      value={selectedGenre[userData?.id || ""]}
-                      handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                        handleRoleChangeGenre(
-                          userData?.id || "",
-                          e.target.value
-                        )
-                      }
-                    />
+                      <DropDown
+                        label="Genre"
+                        options={filteredGenre.map((classes) => ({
+                          key: classes,
+                          label: classes,
+                          value: classes,
+                        }))}
+                        className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+                        name="Genre"
+                        value={selectedGenre[userData?.id || ""]}
+                        handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                          handleRoleChangeGenre(
+                            userData?.id || "",
+                            e.target.value
+                          )
+                        }
+                      />
                     </div>
                     <FormButton type="submit" variant="base">
                       Submit
@@ -233,8 +229,7 @@ export default function UploadPage({
                   {file.map((file, i) => (
                     <div
                       key={i}
-                      className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4"
-                    >
+                      className="shadow-inner container flex justify-between p-10 w-full border-2 border-gray-300 rounded-lg relative mb-4">
                       <Link href={`${file.path}`} key={i}>
                         {file.filename} <br />
                         <span
@@ -244,13 +239,12 @@ export default function UploadPage({
                               : file.status === "DENIED"
                               ? "text-red-500"
                               : "text-green-500"
-                          }`}
-                        >
+                          }`}>
                           {file.status}
                         </span>
                       </Link>
                       <button
-                        key={i+1}
+                        key={i + 1}
                         onClick={() =>
                           file.mimetype.includes("msword") ||
                           file.mimetype.includes(
@@ -259,26 +253,23 @@ export default function UploadPage({
                             ? handleProf(file.id)
                             : router.push(file.path)
                         }
-                        className="ml-4 text-blue-500 hover:underline"
-                      >
+                        className="ml-4 text-blue-500 hover:underline">
                         Lihat File
                       </button>
                       <FormButton
-                        key={i+2}
+                        key={i + 2}
                         type="button"
                         variant="base"
-                        onClick={() => handleDelete(file.id, file)}
-                      >
+                        onClick={() => handleDelete(file.id, file)}>
                         Delete Paper
                       </FormButton>
                       <FormButton
-                        key={i+3}
+                        key={i + 3}
                         type="button"
                         variant="base"
                         onClick={() => {
                           setCover({ ...cover, [file.id]: true });
-                        }}
-                      >
+                        }}>
                         Edit Cover
                       </FormButton>
                       {cover[file.id] && (
@@ -298,8 +289,7 @@ export default function UploadPage({
                                 [file.id]: false,
                               })
                             }
-                            className="h-screen"
-                          >
+                            className="h-screen">
                             <iframe
                               className="w-full h-full"
                               src={`${file.path}&output=embed`}
@@ -307,8 +297,7 @@ export default function UploadPage({
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                               contentEditable
                               sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                              allowFullScreen
-                            ></iframe>
+                              allowFullScreen></iframe>
                           </ModalProfile>
                         )}
                       </>

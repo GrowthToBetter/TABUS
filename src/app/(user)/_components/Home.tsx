@@ -15,10 +15,10 @@ import { FileFullPayload, userFullPayload } from "@/utils/relationsip";
 import { signIn, useSession } from "next-auth/react";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";
-import Card from "../../components/utils/card";
 import { useRouter } from "next/navigation";
+import { FileCard } from "@/app/components/utils/card";
 import toast from "react-hot-toast";
-import ModalProfile from "@/app/components/utils/Modal";
+import { addLike, addViews } from "@/utils/server-action/userGetServerSession";
 
 export default function Home({ userData }: { userData: userFullPayload }) {
   const { data: session, status } = useSession();
@@ -46,9 +46,32 @@ export default function Home({ userData }: { userData: userFullPayload }) {
     }));
   };
   const filteredFiles = files
-  .filter((file) => file.status === "VERIFIED")
-  .sort((a, b) => b.views - a.views)
-  .slice(0, 15);
+    .filter((file) => file.status === "VERIFIED")
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 15);
+
+    const [like, setLike] = useState<boolean>(false);
+    const addLikes = async (file: FileFullPayload) => {
+      setLike(!like);
+      const loading = toast.loading("Loading...");
+  
+      try {
+        const update = await addLike(
+          file.id,
+          like ? file.Like - 1 : file.Like + 1
+        );
+  
+        if (!update) {
+          toast.error("Gagal Menambahkan Like");
+          return;
+        }
+  
+        toast.success("Success", { id: loading });
+        return update;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    };
   if (!filteredFiles) {
     return <>Loading...</>;
   }
@@ -70,8 +93,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
             <FormButton
               onClick={() => router.push("/AjukanKarya")}
               className="mt-20 scale-125 ml-4"
-              variant="base"
-            >
+              variant="base">
               Ajukan Sekarang
             </FormButton>
           </div>
@@ -95,87 +117,37 @@ export default function Home({ userData }: { userData: userFullPayload }) {
         </div>
       </div>
       <div className=" grid lg:grid-cols-3 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
-        {filteredFiles.map((user, i) => (
-          <div
+        {filteredFiles.map((file, i) => (
+          <FileCard
             key={i}
-            id="container"
-            className="w-full h-fit bg-slate-50 rounded-3xl pb-6 border border-slate-200"
-          >
-            <Image
-              src={
-                user.coverFile
-                  ? (user.coverFile as string)
-                  : "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"
-              }
-              unoptimized
-              quality={100}
-              width={100}
-              height={100}
-              alt="banner"
-              className="w-full object-cover h-40 rounded-t-3xl"
-            />
-            <div className="ml-8 mt-2">
-              <div className="flex justify-between p-5">
-                <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
-                  {user.filename}
-                </p>
-                <p className="font-medium xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-black">
-                  views : {user.views}
-                </p>
-              </div>
-
-              <div className="mt-6 justify-between flex">
-                <LinkButton
-                  variant="white"
-                  href={`/ListKarya/user/profile/${user.userId}`}
-                  className="bg-transparent border rounded-full"
-                >
-                  Profil
-                </LinkButton>
-                <div className="flex gap-x-4">
-                  <FormButton
-                    variant="base"
-                    onClick={() => {
-                      if(user.path.includes("drive")){
-                        handleProf(user.id, user.permisionId as string)
-                      } else {
-                        router.push(user.path);
-                      }
-                    }}
-                    className=" text-blue-500 hover:underline"
-                  >
-                    Baca
-                  </FormButton>
-                </div>
-              </div>
-              {openProfiles[user.id]?.isOpen && (
-                <ModalProfile
-                  title={user.filename}
-                  onClose={() => handleProf(user.id, "")}
-                  className="h-screen"
-                >
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://drive.google.com/file/d/${
-                      openProfiles[user.id]?.link
-                    }/preview`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                    allowFullScreen
-                  ></iframe>
-                </ModalProfile>
-              )}
-            </div>
-          </div>
+            file={file}
+            onLike={() => addLikes(file)}
+            onRead={() => {
+              router.push(file.path);
+              addViews(file.id, file.views + 1);
+            }}
+            user={userData}
+          />
         ))}
       </div>
-        <LinkButton href={"/ListKarya"} className="m-5" variant="base">Lihat Lebih Banyak </LinkButton>
+      <LinkButton href={"/ListKarya"} className="m-5" variant="base">
+        Lihat Lebih Banyak{" "}
+      </LinkButton>
       <div>
+        {session?.user?.role === "ADMIN" ||
+          (session?.user?.role === "SUPERADMIN" && (
+            <video
+              className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+              controls
+              preload="metadata">
+              <source src="/video/tutorial.mp4" type="video/mp4" />
+              Video Tutorial
+            </video>
+          ))}
         <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
           <div className="max-w-max">
             <h1
-              className={`text-[64px] text-start ${archivo_black.className} leading-none`}
-            >
+              className={`text-[64px] text-start ${archivo_black.className} leading-none`}>
               <span className="text-red-500">R</span>uang Belajar
             </h1>
             <p className="xl:text-[32px] lg:text-[30px] md:text-[28px] sm:text-[26px] text-[24px] font-normal my-2">
@@ -184,8 +156,7 @@ export default function Home({ userData }: { userData: userFullPayload }) {
             <FormButton
               onClick={() => signIn()}
               className="mt-[17px] scale-125 ml-4"
-              variant="base"
-            >
+              variant="base">
               Get Started Now!
             </FormButton>
           </div>

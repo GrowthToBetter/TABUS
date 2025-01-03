@@ -20,7 +20,7 @@ export default async function page() {
       comment: { include: { file: true } },
     },
   });
-  const file: FileFullPayload[] = await prisma.fileWork.findMany({
+  const file = await prisma.fileWork.findMany({
     where: {
       userId: session?.user?.id,
     },
@@ -31,5 +31,5 @@ export default async function page() {
     },
   });
 
-  return <Home userData={userData as userFullPayload} file={file} />;
+  return <Home userData={userData as userFullPayload} file={file as FileFullPayload[]} />;
 }

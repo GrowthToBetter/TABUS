@@ -4,14 +4,49 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FormButton, LinkButton } from "./Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
 import ModalProfile from "./Modal";
+import { Button } from "./buttons";
+import { set } from "date-fns";
+import { IFrameViewer } from "./Iframe";
+
+export const NAV_ITEMS = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "Panduan",
+    child:[
+      {
+        label: "Siswa",
+      },
+      {
+        label: "Guru"
+      },
+      {
+        label: "Admin",
+      },
+    ],
+  },
+  {
+    label: "ajukan",
+    href: "/AjukanKarya",
+    authRequired: true,
+  },
+  {
+    label: "List Karya",
+    href: "/ListKarya",
+  },
+];
 
 export default function Navbar() {
   const [modal, setModal] = useState<boolean>(false);
   const [prof, setprof] = useState<boolean>(false);
+  const [label, setLabel] = useState<string | null>(null);
   const handleProf = () => {
     prof ? setprof(false) : setprof(true);
   };
@@ -21,9 +56,7 @@ export default function Navbar() {
 
   const pathName = usePathname();
   const router = useRouter();
-  const [tutorial, setTutorial] = useState<boolean>(
-    pathName === "/" ? true : false
-  );
+  const [tutorial, setTutorial] = useState<string | null>(null);
 
   const { data: session, status } = useSession();
   return (
@@ -43,10 +76,10 @@ export default function Navbar() {
               </h1>
             </div>
           </Link>
-          {tutorial && (
+          {tutorial === "Siswa" && (
             <ModalProfile
               onClose={() => {
-                setTutorial(false);
+                setTutorial(null);
               }}
               title="Panduan">
               <div className="flex justify-center flex-col items-center">
@@ -96,29 +129,65 @@ export default function Navbar() {
                     disimpan
                   </li>
                 </ul>
-
-                {session?.user?.role === "ADMIN" ||
-                  (session?.user?.role === "SUPERADMIN" && (
-                    <video
-                      className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
-                      controls
-                      preload="metadata">
-                      <source src="/video/tutorial.mp4" type="video/mp4" />
-                      Video Tutorial
-                    </video>
-                  ))}
                 <div className="h-32 w-full invisible"></div>
               </div>
             </ModalProfile>
           )}
+          {
+            tutorial === "Guru" && (
+              <ModalProfile title="Panduan Guru" onClose={() => setTutorial(null)}>
+                <IFrameViewer url={'/video/tutorial.mp4'} onClose={() => setTutorial(null)}/>
+              </ModalProfile>
+            )
+          }
+          <div
+            className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            id="navbar-sticky">
+            <ul className="flex flex-col ltr:space-x-reverse items-center justify-center p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md-lg md:space-x-8 md:flex-row md:mt-0 md:border-0 opacity-80">
+              {NAV_ITEMS.filter(
+                (item) => !item.authRequired || (item.authRequired && session)
+              ).map((item, index) => (
+                <li key={index}>
+                  {item.child ? (
+                    <DropdownMenu.Root>
+                      <DropdownMenu.Trigger asChild>
+                        <button className="text-black rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2">
+                          {item.label}
+                        </button>
+                      </DropdownMenu.Trigger>
+                      <DropdownMenu.Content
+                        className="bg-white border border-gray-200 rounded-md p-2 shadow-lg"
+                        sideOffset={5}>
+                        {item.child.map((childItem, childIndex) => (
+                          <DropdownMenu.Item key={childIndex} asChild>
+                            <Button
+                              onClick={() => {
+                                setTutorial(childItem.label);
+                              }}
+                              className={`${"text-blue-500 border-2 bg-white border-Primary"
+                              } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 block`}>
+                              {childItem.label}
+                            </Button>
+                          </DropdownMenu.Item>
+                        ))}
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Root>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={`${
+                        pathName === item.href
+                          ? "text-blue-500 border-2 bg-white border-Primary"
+                          : "text-black"
+                      } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2`}>
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <FormButton
-              variant="base"
-              onClick={() => {
-                setTutorial(true);
-              }}>
-              Panduan
-            </FormButton>
             <div>
               {status === "unauthenticated" ? (
                 <button
@@ -191,115 +260,6 @@ export default function Navbar() {
                 </>
               )}
             </div>
-            <button
-              data-collapse-toggle="navbar-sticky"
-              type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-Secondary focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
-              aria-controls="navbar-sticky"
-              aria-expanded="false"
-              onClick={handleClick}>
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="w-5 h-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 17 14">
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 1h15M1 7h15M1 13h15"
-                />
-              </svg>
-            </button>
-            <div>
-              {modal && (
-                <div className="flex mt-10 text-center md:hidden">
-                  <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-Secondary-1000 py-14 space-y-14">
-                    <li>
-                      <Link
-                        href="/"
-                        className={`${
-                          pathName === "/"
-                            ? "text-black border-2 border-Secondary"
-                            : "text-white"
-                        } rounded-md hover:text-blue-600 hover:border-2 p-2 hover:border-Secondary`}>
-                        Beranda
-                      </Link>
-                    </li>
-                    {session?.user?.email && (
-                      <li>
-                        <Link
-                          href="/AjukanKarya"
-                          className={`${
-                            pathName === "/AjukanKarya"
-                              ? "text-black border-2 border-Secondary"
-                              : "text-white"
-                          } rounded-md hover:text-blue-600 hover:border-2 p-2 `}>
-                          Ajukan Karya
-                        </Link>
-                      </li>
-                    )}
-                    <li>
-                      <Link
-                        href="/ListKarya"
-                        className={`${
-                          pathName === "/ListKarya"
-                            ? "text-black border-2 border-Secondary"
-                            : "text-white"
-                        } rounded-md hover:text-blue-600 hover:border-2 p-2 `}>
-                        List Karya
-                      </Link>
-                    </li>
-                    <li className="flex justify-center"></li>
-                  </ul>
-                  <div></div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div
-            className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-            id="navbar-sticky">
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
-              <li>
-                <Link
-                  href="/"
-                  className={`${
-                    pathName === "/"
-                      ? "text-black border-2 bg-white border-Primary"
-                      : "text-white"
-                  } rounded-md  hover:text-black  hover:bg-white duration-200 hover:border-2 p-2 `}>
-                  Beranda
-                </Link>
-              </li>
-              {session?.user?.email && (
-                <li>
-                  <Link
-                    href="/AjukanKarya"
-                    className={`${
-                      pathName === "/AjukanKarya"
-                        ? "text-black border-2 bg-white border-Primary"
-                        : "text-white"
-                    } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}>
-                    Ajukan Karya
-                  </Link>
-                </li>
-              )}
-              <li>
-                <Link
-                  href="/ListKarya"
-                  className={`${
-                    pathName === "/ListKarya"
-                      ? "text-black border-2 bg-white border-Primary"
-                      : "text-white"
-                  } rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2 `}>
-                  List Karya
-                </Link>
-              </li>
-            </ul>
           </div>
         </div>
       </nav>

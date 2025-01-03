@@ -140,7 +140,11 @@ export const commentFile = async (
   try {
     const createComment = await prisma.comment.create({
       data: {
-        file,
+        fileSugest:{
+          connect: {
+            id: file.connect.id
+          }
+        },
         user: {
           connect: {
             id: user.connect.id,
@@ -152,6 +156,7 @@ export const commentFile = async (
     if (!createComment) {
       throw new Error("eror");
     }
+    revalidatePath("/ListKarya")
     return createComment;
   } catch (error) {
     throw new Error((error as Error).message);

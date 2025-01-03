@@ -2,17 +2,17 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { userFullPayload } from "@/utils/relationsip";
-import {  Gender } from "@prisma/client";
+import { Gender } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { FormButton } from "@/app/components/utils/Button";
 import ModalProfile from "@/app/components/utils/Modal";
-import { DropDown,  TextField } from "@/app/components/utils/Form";
+import { DropDown, TextField } from "@/app/components/utils/Form";
 import toast from "react-hot-toast";
 import { UpdateGeneralProfileById } from "@/utils/server-action/userGetServerSession";
 import Link from "next/link";
 import ModalEditCover from "./ModalEditCover";
 
-export default function Profile({userData}:{userData:userFullPayload}) {
+export default function Profile({ userData }: { userData: userFullPayload }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [cover, setCover] = useState(false);
@@ -40,38 +40,43 @@ export default function Profile({userData}:{userData:userFullPayload}) {
     <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
         <div className={`absolute inset-0 z-0 h-72 `}>
-        <Image
+          <Image
             quality={100}
             unoptimized
-            src={(userData?.cover as string) || "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"}
+            src={
+              (userData?.cover as string) ||
+              "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"
+            }
             width={100}
             height={1000}
             alt="banner profile"
             className="w-full md:h-full h-28 object-cover"
           />
         </div>
-        <FormButton variant="base" className="absolute top-8 right-10" onClick={() => setCover(true)}>
+        <FormButton
+          variant="base"
+          className="absolute top-8 right-10"
+          onClick={() => setCover(true)}>
           Edit Cover
         </FormButton>
         {cover && <ModalEditCover setIsOpenModal={setCover} />}
         <div className="relative z-10 flex flex-col items-start mt-44 sm:mt-48 md:mt-44 lg:mt-32 xl:mt-28">
           <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">
             <Image
-              src={(userData?.photo_profile as string ) || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png"}
+              src={
+                (userData?.photo_profile as string) ||
+                "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png"
+              }
               alt="Image Profile"
               width={180}
               height={180}
               className="mx-auto"
-              />
+            />
           </div>
           <div className="mt-4 flex w-full justify-between">
             <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
               {userData?.name}
-              {
-                `${
-                  userData?.clasess ? `(${userData.clasess})` : " "
-                }` as string
-              }
+              {`${userData?.clasess ? `(${userData.clasess})` : " "}` as string}
             </h1>
             <div className="flex gap-x-2">
               <FormButton variant="base" onClick={handleModal}>
@@ -80,10 +85,20 @@ export default function Profile({userData}:{userData:userFullPayload}) {
             </div>
           </div>
           <div className="h-2">
-            <Link className="text-Secondary hover:text-blue-500 active:text-blue-500" href={`https://wa.me/${userData?.Phone?.includes("0") ? userData?.Phone?.replace("0", "62"): userData?.Phone}`}>wa.me/{userData?.Phone?.includes("0") ? userData?.Phone?.replace("0", "62"): userData?.Phone}</Link>
+            <Link
+              className="text-Secondary hover:text-blue-500 active:text-blue-500"
+              href={`https://wa.me/${
+                userData?.Phone?.includes("0")
+                  ? userData?.Phone?.replace("0", "62")
+                  : userData?.Phone
+              }`}>
+              wa.me/
+              {userData?.Phone?.includes("0")
+                ? userData?.Phone?.replace("0", "62")
+                : userData?.Phone}
+            </Link>
           </div>
         </div>
-
       </div>
       {modal && (
         <ModalProfile onClose={() => setModal(false)}>
@@ -92,8 +107,7 @@ export default function Profile({userData}:{userData:userFullPayload}) {
               e.preventDefault();
               const formdata = new FormData(e.currentTarget);
               handleSubmit(formdata);
-            }}
-          >
+            }}>
             <TextField
               type="text"
               label="Name"
@@ -108,9 +122,8 @@ export default function Profile({userData}:{userData:userFullPayload}) {
               disabled
               defaultValue={userData?.email as string}
             />
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
-              
               <TextField
                 type="text"
                 label="Phone"
@@ -143,8 +156,7 @@ export default function Profile({userData}:{userData:userFullPayload}) {
                       className="inline w-5 h-5 animate-spin text-red-500 fill-white"
                       viewBox="0 0 100 101"
                       fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
+                      xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                         fill="currentColor"
