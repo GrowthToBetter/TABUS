@@ -1,39 +1,5 @@
 "use client";
-{
-  /* <FormButton
-            variant="base"
-            onClick={() => {
-              if (
-                file.mimetype.includes("msword") ||
-                file.mimetype.includes(
-                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                )
-              ) {
-                setOpenProfiles(true);
-              } else {
-                router.push(file.path);
-              }
-              addView();
-            }}
-            className=" text-blue-500 hover:underline">
-            Lihat File
-          </FormButton>
-        <>
-          {openProfiles && (
-            <ModalProfile
-              title={file.filename}
-              onClose={() => setOpenProfiles(false)}
-              className="h-screen">
-              <iframe
-                className="w-full h-full"
-                src={`${file.path}&output=embed`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                sandbox="allow-scripts allow-modals allow-popups allow-presentation allow-same-origin"
-                allowFullScreen></iframe>
-            </ModalProfile>
-          )}
-        </> */
-}
+
 
 import { FileCardProps, UserProfileCardProps } from "./Hero";
 import Image from "next/image";
@@ -51,7 +17,6 @@ import { commentFile } from "@/utils/server-action/userGetServerSession";
 import { useSession } from "next-auth/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { User, X } from "lucide-react";
-import { toast as Toaster } from "sonner";
 import ModalProfile from "./Modal";
 
 const items = () => [
@@ -59,12 +24,6 @@ const items = () => [
     label: "Baca",
     action: (action: () => void) => {
       action();
-    },
-  },
-  {
-    label: "Beli",
-    action: async () => {
-      Toaster.message("this feature is not available yet");
     },
   },
 ];
