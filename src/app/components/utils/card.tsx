@@ -1,32 +1,16 @@
 "use client";
 
-
 import { FileCardProps, UserProfileCardProps } from "./Hero";
 import Image from "next/image";
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 import { Button } from "./buttons";
 import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/app/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
 import { commentFile } from "@/utils/server-action/userGetServerSession";
 import { useSession } from "next-auth/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { User, X } from "lucide-react";
 import ModalProfile from "./Modal";
-
-const items = () => [
-  {
-    label: "Baca",
-    action: (action: () => void) => {
-      action();
-    },
-  },
-];
 
 export const UserProfileCard: React.FC<UserProfileCardProps> = ({
   currentUser,
@@ -131,37 +115,22 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onLike, user }) => {
               aria-label={`Like ${file.filename}. Current likes: ${file.Like}`}>
               Like: {file.Like}
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="text-black rounded-md hover:text-black hover:bg-white duration-200 hover:border-2 p-2">
-                  Action
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="bg-white border border-gray-200 rounded-md p-2 shadow-lg"
-                sideOffset={5}>
-                {items().map((childItem, childIndex) => (
-                  <DropdownMenuItem key={childIndex} asChild>
-                    <Button
-                      variant="default"
-                      className="text-white hover:text-Secondary cursor-pointer"
-                      onClick={() => {
-                        childItem.action(() => {
-                          setOpenProfiles(true);
-                        });
-                      }}>
-                      {childItem.label}
-                    </Button>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="default"
+              className="text-white hover:text-Secondary cursor-pointer"
+              onClick={() => {
+                setOpenProfiles(true);
+              }}>
+              Baca
+            </Button>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex gap-4">
               <button
                 onClick={() =>
-                  setOpenCommentUser(openCommentUser === file.id ? null : file.id)
+                  setOpenCommentUser(
+                    openCommentUser === file.id ? null : file.id
+                  )
                 }
                 className="p-2 text-blue-500 hover:underline">
                 Comment
@@ -179,16 +148,16 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onLike, user }) => {
               />
 
               <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => handleSubmitComment(file.id)}
-                className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
-                Kirim Komentar
-              </button>
-              <button
-                onClick={() => setOpenCommentUser(null)}
-                className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
-                close
-              </button>
+                <button
+                  onClick={() => handleSubmitComment(file.id)}
+                  className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+                  Kirim Komentar
+                </button>
+                <button
+                  onClick={() => setOpenCommentUser(null)}
+                  className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+                  close
+                </button>
               </div>
             </div>
           )}
