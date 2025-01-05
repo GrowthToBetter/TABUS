@@ -134,16 +134,6 @@ export default function Home({ userData }: { userData: userFullPayload }) {
         Lihat Lebih Banyak{" "}
       </LinkButton>
       <div>
-        {session?.user?.role === "ADMIN" ||
-          (session?.user?.role === "SUPERADMIN" && (
-            <video
-              className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
-              controls
-              preload="metadata">
-              <source src="/video/tutorial.mp4" type="video/mp4" />
-              Video Tutorial
-            </video>
-          ))}
         <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
           <div className="max-w-max">
             <h1
