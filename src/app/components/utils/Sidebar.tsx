@@ -71,29 +71,6 @@ export default function Sidebar() {
         variant="base">
         Menu
       </FormButton>
-      <FormButton
-        type="button"
-        onClick={() => {
-          setModal(true);
-        }}
-        className=" rounded-full top-0 left-0"
-        variant="base">
-        tutorial
-      </FormButton>
-      {
-        <ModalProfile title="Tutorial" onClose={() => setModal(false)}>
-          {session?.user?.role === "ADMIN" ||
-            (session?.user?.role === "SUPERADMIN" && (
-              <video
-                className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
-                controls
-                preload="metadata">
-                <source src="/video/tutorial.mp4" type="video/mp4" />
-                Video Tutorial
-              </video>
-            ))}
-        </ModalProfile>
-      }
       {active && (
         <div className="lg:block lg:w-80 relative">
           <aside
