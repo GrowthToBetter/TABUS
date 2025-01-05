@@ -15,11 +15,14 @@ export async function middleware(req: NextRequest) {
       pathname.startsWith("/AjukanKarya") ||
       pathname.startsWith("/profile")
     ) {
-      return NextResponse.redirect(
-        new URL(`/signin?callbackUrl=${encodeURIComponent(pathname)}`, req.url)
-      );
+        return NextResponse.redirect(new URL("/signin", req.url));
     }
     return NextResponse.next();
+  }
+  if (pathname.includes("/signin") && token) {
+    if (token.role === "SUPERADMIN" || token.role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
   }
 
   const restrictedRolesForAdmin = ["GURU", "VALIDATOR"];
