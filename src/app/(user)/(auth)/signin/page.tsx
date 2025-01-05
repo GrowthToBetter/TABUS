@@ -33,6 +33,7 @@ export default function Signin() {
     if (session && userData) {
       setIsLoading(true);
       toast.success("Berhasil Login!");
+      router.push("/");
     }
   }, [session, userData, router]);
 
