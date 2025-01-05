@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
       pathname.startsWith("/profile")
     ) {
       return NextResponse.redirect(
-        new URL(`/signin?callbackUrl=${pathname}`, req.url)
+        new URL(`/signin?callbackUrl=${encodeURIComponent(pathname)}`, req.url)
       );
     }
     return NextResponse.next();
