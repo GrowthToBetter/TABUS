@@ -86,4 +86,4 @@ export default async function AdminPage() {
 
 
 
-export const maxDuration = 80;
+export const maxDuration = 60;
