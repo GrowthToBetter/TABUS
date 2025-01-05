@@ -31,10 +31,8 @@ export default function Signin() {
       setIsLoading(true);
       if (!userData.title || !userData.clasess) {
         toast.success("Berhasil Login!");
-        router.push("/AjukanKarya");
       } else if(userData.title){
         toast.success("Berhasil Login!");
-        router.push("/")
       }else {
         toast.error("Maaf Login Gagal");
         setIsLoading(false);
