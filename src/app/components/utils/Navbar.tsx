@@ -27,8 +27,7 @@ export const NAV_ITEMS = [
       },
       {
         label: "Guru",
-        authRequired: true,
-        roleRequired: ["GURU", "VALIDATOR"],
+        roleRequired: ["ALL"],
       },
       {
         label: "Admin",
@@ -144,6 +143,16 @@ export default function Navbar() {
               onClose={() => setTutorial(null)}>
               <IFrameViewer
                 url={"/video/tutorial.mp4"}
+                onClose={() => setTutorial(null)}
+              />
+            </ModalProfile>
+          )}
+          {tutorial === "Siswa" && (
+            <ModalProfile
+              title="Panduan Guru"
+              onClose={() => setTutorial(null)}>
+              <IFrameViewer
+                url={"/video/Siswa.mp4"}
                 onClose={() => setTutorial(null)}
               />
             </ModalProfile>
