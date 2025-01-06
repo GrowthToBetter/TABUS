@@ -12,6 +12,7 @@ import ModalProfile from "./Modal";
 import { Button } from "./buttons";
 import { set } from "date-fns";
 import { IFrameViewer } from "./Iframe";
+import { H1 } from "../ui/text";
 
 export const NAV_ITEMS = [
   {
@@ -146,12 +147,23 @@ export default function Navbar() {
           )}
           {tutorial === "Admin" && (
             <ModalProfile
-              title="Panduan Guru"
+              title="Panduan Admin"
               onClose={() => setTutorial(null)}>
-              <IFrameViewer
-                url={"/video/tutorial.mp4"}
-                onClose={() => setTutorial(null)}
-              />
+              <video
+                className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+                controls
+                preload="metadata">
+                <source src="/video/tutorial.mp4" type="video/mp4" />
+                Video Tutorial
+              </video>
+              <h3 className="text-xl font-semibold text-gray-900">Panduan Komentar</h3>
+              <video
+                className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+                controls
+                preload="metadata">
+                <source src="/video/komentar.mp4" type="video/mp4" />
+                Video Tutorial
+              </video>
             </ModalProfile>
           )}
           {tutorial === "Siswa" && (
