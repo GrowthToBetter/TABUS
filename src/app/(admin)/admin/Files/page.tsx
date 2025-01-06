@@ -22,7 +22,6 @@ export default async function studentData() {
       comment: { include: { file: true } },
     },
   });
-  console.log(studentData);
 
   return (
     <div className="flex flex-col">

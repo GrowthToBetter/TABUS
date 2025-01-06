@@ -629,32 +629,32 @@ export const DeleteFile = async (id: string, file: FileFullPayload) => {
     if (!session?.user) {
       return { status: 401, message: "Auth Required" };
     }
-    const driveResponse = await drive.files.delete({
-      fileId: file.permisionId as string,
-    });
-    if (!driveResponse) {
-      const del = await prisma.fileWork.delete({
-        where: { id },
+
+    if (file.permisionId) {
+      const driveResponse = await drive.files.delete({
+        fileId: file.permisionId as string,
       });
-      if (!del) {
-        return { status: 400, message: "Failed to delete user!" };
+
+      if (!driveResponse) {
+        return { status: 400, message: "Failed to delete file from Google Drive!" };
       }
-      revalidatePath("/AjukanKarya");
-      return { status: 200, message: "Delete Success!" };
     }
     const del = await prisma.fileWork.delete({
       where: { id },
     });
+
     if (!del) {
-      return { status: 400, message: "Failed to delete user!" };
+      return { status: 400, message: "Failed to delete file from database!" };
     }
-    revalidatePath("/AjukanKarya");
+
+    revalidatePath("/admin/Files");
     return { status: 200, message: "Delete Success!" };
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error("Error deleting file:", error);
     throw new Error((error as Error).message);
   }
 };
+
 
 export const updateRole = async (id: string, data: FormData) => {
   try {
