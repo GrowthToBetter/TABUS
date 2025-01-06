@@ -26,3 +26,6 @@ export default async function page() {
   });
   return <Home userData={userData as userFullPayload} files={files as FileFullPayload[]}/>;
 }
+
+
+export const maxDuration = 60;
