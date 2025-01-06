@@ -133,6 +133,13 @@ export default function Navbar() {
                     disimpan
                   </li>
                 </ul>
+                <video
+                  className="w-full flex justify-center m-5 max-w-md rounded-lg shadow-lg"
+                  controls
+                  preload="metadata">
+                  <source src="/video/Guru.mp4" type="video/mp4" />
+                  Video Tutorial
+                </video>
                 <div className="h-32 w-full invisible"></div>
               </div>
             </ModalProfile>
@@ -181,9 +188,7 @@ export default function Navbar() {
                               !item.authRequired ||
                               item.roleRequired?.includes("ALL") ||
                               (session?.user &&
-                                item.roleRequired?.includes(
-                                  session.user.role
-                                ))
+                                item.roleRequired?.includes(session.user.role))
                           )
                           .map((childItem, childIndex) => (
                             <DropdownMenu.Item key={childIndex} asChild>
