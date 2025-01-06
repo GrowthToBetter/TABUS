@@ -162,8 +162,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onLike, user }) => {
             </div>
           )}
 
-          {((status === "authenticated" && session.user?.role === "ADMIN") ||
-            session?.user?.role === "SUPERADMIN") &&
+          {(status === "authenticated" && (session.user?.role === "ADMIN" ||session?.user?.role === "SUPERADMIN")) &&
             file.comment && (
               <Dialog.Root
                 open={openComment === file.id}

@@ -20,18 +20,7 @@ import { FileCard } from "@/app/components/utils/card";
 import toast from "react-hot-toast";
 import { addLike, addViews } from "@/utils/server-action/userGetServerSession";
 
-export default function Home({ userData }: { userData: userFullPayload }) {
-  const { data: session, status } = useSession();
-  const [files, setFile] = useState<FileFullPayload[]>([]);
-  const { data, error } = useSWR(`/api/getFiles`, fetcher, {
-    refreshInterval: 1000,
-  });
-  useEffect(() => {
-    if (data) {
-      const { dataFile } = data;
-      setFile(dataFile);
-    }
-  }, [data]);
+export default function Home({ userData, files }: { userData: userFullPayload; files: FileFullPayload[] }) {
   const router = useRouter();
   const [openProfiles, setOpenProfiles] = useState<{
     [key: string]: { isOpen: boolean; link: string };
