@@ -4,8 +4,6 @@ export default function Pengembang() {
   const developers = [
     { job: "General Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
     { job: "Project Manager and Fullstack Developer", name: "Jean Richnerd Rantabaratrahjaga" },
-    { job: "Software Architect and Data Ai Engineer", name: "Shabri Sebastian Siregar" },
-    { job: "Human Resource and Public Relation ", name: "Syafakarim Akbar" },
   ];
 
   return (
