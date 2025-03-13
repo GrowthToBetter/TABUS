@@ -46,6 +46,10 @@ export const NAV_ITEMS = [
     label: "List Karya",
     href: "/ListKarya",
   },
+  {
+    label: "Pengembang",
+    href: "/pengembang",
+  },
 ];
 
 export default function Navbar() {
